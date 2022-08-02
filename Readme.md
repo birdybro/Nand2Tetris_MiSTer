@@ -1,4 +1,4 @@
-# [Nand2Tetris](https://www.nand2tetris.org/) for [MiSTer FPGA](https://mister-devel.github.io/MkDocs_MiSTer/
+# [Nand2Tetris](https://www.nand2tetris.org/) for [MiSTer FPGA](https://mister-devel.github.io/MkDocs_MiSTer/)
 
 ## Description
 
