@@ -11,7 +11,17 @@ module NOT
 
 // NOT(a) OR NOT(a)
 // NOT(a)
+// assign out = ~a;
 
-assign out = ~a;
+// (a NAND a)
+
+NAND NAND
+(
+    .a(a),
+    .b(a),
+    .out(nand_out)
+);
+
+assign out = nand_out;
 
 endmodule
