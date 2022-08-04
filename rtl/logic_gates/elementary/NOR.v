@@ -31,8 +31,72 @@ module NOR
 // | 1 | 1 | 0   |
 
 // (NOT(a) AND NOT(b))
-// ()
+// assign out = (~a & ~b);
 
-assign out = (~a & ~b);
+// ((a NAND a) AND (b NAND b))
+// (((a NAND a) NAND (b NAND b)) NAND ((a NAND a) NAND (b NAND b)))
+
+wire nand_1_out;
+
+NAND NAND_1
+(
+    .a(a),
+    .b(a),
+    .out(nand_1_out)
+);
+
+wire nand_2_out;
+
+NAND NAND_2
+(
+    .a(b),
+    .b(b),
+    .out(nand_2_out)
+);
+
+wire nand_3_out;
+
+NAND NAND_3
+(
+    .a(a),
+    .b(a),
+    .out(nand_3_out)
+);
+
+wire nand_4_out;
+
+NAND NAND_4
+(
+    .a(b),
+    .b(b),
+    .out(nand_4_out)
+);
+
+wire nand_5_out;
+
+NAND NAND_5
+(
+    .a(nand_1_out),
+    .b(nand_2_out),
+    .out(nand_5_out)
+);
+
+wire nand_6_out;
+
+NAND NAND_6
+(
+    .a(nand_3_out),
+    .b(nand_4_out),
+    .out(nand_6_out)
+);
+
+NAND NAND_7
+(
+    .a(nand_5_out),
+    .b(nand_6_out),
+    .out(nand_7_out)
+);
+
+assign out = nand_7_out; // bwahahahaha
 
 endmodule
