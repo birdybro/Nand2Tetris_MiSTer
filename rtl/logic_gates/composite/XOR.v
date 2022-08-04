@@ -14,8 +14,8 @@ module XOR
 
 // (NOT(a) AND b) OR (a AND NOT(b))
 
-// You can actually make this (a ^ b) because ^ is a bitwise XOR operator if you wanted to
-// another way to do this is just ((~a & b) | (a & ~b))
+// You can actually make this assign out = (a ^ b); because ^ is a bitwise XOR operator if you wanted to
+// another way to do this is just assign out = ((~a & b) | (a & ~b));
 // but since this is a composite, let's try and do it at the elementary gate level
 // I will probably get this wrong, but doing it early anyways...
 
@@ -62,6 +62,6 @@ OR OR
     .out(or_out)
 );
 
-assign out = or_out;
+assign out = or_out; // voila jtXOR.v is complete
 
 endmodule
