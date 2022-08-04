@@ -17,7 +17,7 @@
 //
 //============================================================================
 
-module Nand2Tetris
+module Nand2Tetris_top
 (
 	input         clk,
 	input         reset,
