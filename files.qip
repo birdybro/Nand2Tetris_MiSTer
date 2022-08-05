@@ -3,22 +3,21 @@ set_global_assignment -name SYSTEMVERILOG_FILE rtl/Nand2Tetris_top.sv
 set_global_assignment -name SDC_FILE Nand2Tetris.sdc
 set_global_assignment -name SYSTEMVERILOG_FILE Nand2Tetris.sv
 
-# Elementary Logic Gates
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/AND.v
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/BUFFER.v
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/NAND.v
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/NOR.v
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/NOT.v
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/OR.v
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/XNOR.v
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/XOR.v
+# Elementary Logic Gates (all made from NAND except NAND.v itself)
+set_global_assignment -name VERILOG_FILE rtl/gates/AND.v
+set_global_assignment -name VERILOG_FILE rtl/gates/BUFFER.v
+set_global_assignment -name VERILOG_FILE rtl/gates/NAND.v
+set_global_assignment -name VERILOG_FILE rtl/gates/NOR.v
+set_global_assignment -name VERILOG_FILE rtl/gates/NOT.v
+set_global_assignment -name VERILOG_FILE rtl/gates/OR.v
+set_global_assignment -name VERILOG_FILE rtl/gates/XNOR.v
+set_global_assignment -name VERILOG_FILE rtl/gates/XOR.v
 
 # Composite Logic Gates
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/AND16.v
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/DMUX.v
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/DMUX4WAY.v
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/MUX.v
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/MUX4WAY.v
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/MUX16.v
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/OR8WAY.v
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/OR16.v
+set_global_assignment -name VERILOG_FILE rtl/gates/AND16.v
+set_global_assignment -name VERILOG_FILE rtl/gates/DMUX.v
+set_global_assignment -name VERILOG_FILE rtl/gates/DMUX4WAY.v
+set_global_assignment -name VERILOG_FILE rtl/gates/MUX.v
+set_global_assignment -name VERILOG_FILE rtl/gates/MUX16.v
+set_global_assignment -name VERILOG_FILE rtl/gates/OR8WAY.v
+set_global_assignment -name VERILOG_FILE rtl/gates/OR16.v
