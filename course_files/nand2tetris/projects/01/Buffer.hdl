@@ -1,0 +1,8 @@
+CHIP Buffer {
+    IN in;
+    OUT out;
+
+    PARTS:
+    Nand (a=in, b=in, out=nandout);
+    Nand (a=nandout, b=nandout, out=out);
+}
