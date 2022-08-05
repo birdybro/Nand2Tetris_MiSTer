@@ -16,3 +16,4 @@ set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/XOR.v
 set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/DMUX.v
 set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/DMUX4WAY.v
 set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/MUX.v
+set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/OR8WAY.v
