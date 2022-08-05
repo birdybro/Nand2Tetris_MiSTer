@@ -18,7 +18,7 @@
 
 module NOT
 (
-    input  a,
+    input  in,
     output out
 );
 
@@ -35,8 +35,8 @@ module NOT
 
 NAND NAND
 (
-    .a(a),
-    .b(a),
+    .a(in),
+    .b(in),
     .out(nand_out)
 );
 
