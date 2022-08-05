@@ -5,6 +5,7 @@ set_global_assignment -name SYSTEMVERILOG_FILE Nand2Tetris.sv
 
 # Elementary Logic Gates
 set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/AND.v
+set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/BUFFER.v
 set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/NAND.v
 set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/NOR.v
 set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/NOT.v
