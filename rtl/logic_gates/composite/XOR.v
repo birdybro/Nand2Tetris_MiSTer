@@ -49,7 +49,7 @@ wire not_2_out;
 
 NOT NOT_2
 (
-    .a(a),
+    .a(b),
     .out(not_2_out)
 );
 
