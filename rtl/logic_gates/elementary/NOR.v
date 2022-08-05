@@ -16,7 +16,7 @@
 //
 //============================================================================
 
-module NOR
+module g_NOR
 (
     input  a,
     input  b,
@@ -38,7 +38,7 @@ module NOR
 
 wire nand_1_out;
 
-NAND NAND_1
+g_NAND NAND_1
 (
     .a(a),
     .b(a),
@@ -47,7 +47,7 @@ NAND NAND_1
 
 wire nand_2_out;
 
-NAND NAND_2
+g_NAND NAND_2
 (
     .a(b),
     .b(b),
@@ -56,7 +56,7 @@ NAND NAND_2
 
 wire nand_3_out;
 
-NAND NAND_3
+g_NAND NAND_3
 (
     .a(nand_1_out),
     .b(nand_2_out),
@@ -65,7 +65,7 @@ NAND NAND_3
 
 wire nand_4_out;
 
-NAND NAND_4
+g_NAND NAND_4
 (
     .a(nand_3_out),
     .b(nand_3_out),

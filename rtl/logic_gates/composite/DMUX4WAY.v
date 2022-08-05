@@ -16,7 +16,7 @@
 //
 //============================================================================
 
-module DMUX4WAY
+module g_DMUX4WAY
 (
     input       in,
     input [1:0] sel,
@@ -43,7 +43,7 @@ module DMUX4WAY
 wire aout;
 wire bout;
 
-DMUX DMUX1
+g_DMUX DMUX1
 (
     .in(in),
     .sel(sel[1]),
@@ -51,7 +51,7 @@ DMUX DMUX1
     .b(bout)
 );
 
-DMUX DMUX2
+g_DMUX DMUX2
 (
     .in(aout),
     .sel(sel[0]),
@@ -59,7 +59,7 @@ DMUX DMUX2
     .b(b)
 );
 
-DMUX DMUX3
+g_DMUX DMUX3
 (
     .in(bout),
     .sel(sel[0]),

@@ -16,7 +16,7 @@
 //
 //============================================================================
 
-module DMUX
+module g_DMUX
 (
     input  in,
     input  sel,
@@ -36,20 +36,20 @@ module DMUX
 
 wire notsel;
 
-NOT NOT
+g_NOT NOT
 (
     .in(sel),
     .out(notsel)
 );
 
-AND AND1
+g_AND AND1
 (
     .a(in),
     .b(notsel),
     .out(a)
 );
 
-AND AND2
+g_AND AND2
 (
     .a(sel),
     .b(in),

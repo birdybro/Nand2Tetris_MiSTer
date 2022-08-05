@@ -16,7 +16,7 @@
 //
 //============================================================================
 
-module MUX
+module g_MUX
 (
     input  a,
     input  b,
@@ -24,7 +24,7 @@ module MUX
     output out
 );
 
-NOT NOT
+g_NOT NOT
 (
     .in(sel),
     .out(notsel)
@@ -32,7 +32,7 @@ NOT NOT
 
 wire and1;
 
-AND AND1
+g_AND AND1
 (
     .a(notsel),
     .b(a),
@@ -41,14 +41,14 @@ AND AND1
 
 wire and2;
 
-AND AND2
+g_AND AND2
 (
     .a(b),
     .b(sel),
     .out(and2)
 );
 
-OR OR
+g_OR OR
 (
     .a(and2),
     .b(and1),

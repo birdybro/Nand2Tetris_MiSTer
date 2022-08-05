@@ -16,7 +16,7 @@
 //
 //============================================================================
 
-module NOT
+module g_NOT
 (
     input  in,
     output out
@@ -33,7 +33,7 @@ module NOT
 
 // (a NAND a)
 
-NAND NAND
+g_NAND NAND
 (
     .a(in),
     .b(in),
