@@ -252,15 +252,15 @@ wire HSync;
 wire VBlank;
 wire VSync;
 wire ce_pix;
-wire [7:0] video;
 
-Nand2Tetris Nand2Tetris
+assign LED_USER = 0;
+
+Nand2Tetris_top Nand2Tetris_top
 (
 	.clk(clk_sys),
 	.reset(reset),
 
-	// .pal(status[2]),
-	.scandouble(forced_scandoubler),
+	.scandoubler(forced_scandoubler),
 
 	.ce_pix(ce_pix),
 
@@ -269,7 +269,9 @@ Nand2Tetris Nand2Tetris
 	.VBlank(VBlank),
 	.VSync(VSync),
 
-	.video(video)
+	.vga_r(VGA_R),
+	.vga_g(VGA_G),
+	.vga_b(VGA_B)
 );
 
 assign CLK_VIDEO = clk_sys;

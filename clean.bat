@@ -22,13 +22,11 @@ del /s *.qws
 del /s *.ppf
 del /s *.ddb
 del /s *.csv
-del /s *.cmp
 del /s *.sip
 del /s *.spd
 del /s *.bsf
 del /s *.f
 del /s *.sopcinfo
-del /s *.xml
 del *.cdf
 del *.rpt
 del /s new_rtl_netlist

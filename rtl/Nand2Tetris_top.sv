@@ -22,8 +22,7 @@ module Nand2Tetris_top
 	input         clk,
 	input         reset,
 
-	// input         pal,
-	input         scandouble,
+	input         scandoubler,
 
 	output reg    ce_pix,
 
@@ -32,7 +31,9 @@ module Nand2Tetris_top
 	output reg    VBlank,
 	output reg    VSync,
 
-	output  [7:0] video
+	output  [3:0] vga_r,
+	output  [3:0] vga_g,
+	output  [3:0] vga_b
 );
 
 
