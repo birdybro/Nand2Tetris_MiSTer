@@ -27,21 +27,6 @@ module g_NOT
 // | 0 | 1   | NOT(a)
 // | 1 | 0   | NOT(a)
 
-// NOT(a) OR NOT(a)
-// NOT(a)
-// assign out = ~a;
-
-// (a NAND a)
-
-wire nand_out;
-
-g_NAND NAND
-(
-    .a(in),
-    .b(in),
-    .out(nand_out)
-);
-
-assign out = nand_out;
+g_NAND NAND ( .a(in), .b(in), .out(out) );
 
 endmodule

@@ -22,65 +22,14 @@ module g_OR8WAY
     output      out
 );
 
-wire orout1;
+wire orout1, orout2, orout3, orout4, oroutx, orouty;
 
-g_OR OR1
-(
-    .a(in[0]),
-    .b(in[1]),
-    .out(orout1)
-);
-
-wire orout2;
-
-g_OR OR2
-(
-    .a(in[2]),
-    .b(in[3]),
-    .out(orout2)
-);
-
-wire orout3;
-
-g_OR OR3
-(
-    .a(in[4]),
-    .b(in[5]),
-    .out(orout3)
-);
-
-wire orout4;
-
-g_OR OR4
-(
-    .a(in[6]),
-    .b(in[7]),
-    .out(orout4)
-);
-
-wire oroutx;
-
-g_OR ORx
-(
-    .a(orout1),
-    .b(orout2),
-    .out(oroutx)
-);
-
-wire orouty;
-
-g_OR ORy
-(
-    .a(orout3),
-    .b(orout4),
-    .out(orouty)
-);
-
-g_OR ORfinal
-(
-    .a(oroutx),
-    .b(orouty),
-    .out(out)
-);
+g_OR OR1 ( .a(in[0]),  .b(in[1]),  .out(orout1) );
+g_OR OR2 ( .a(in[2]),  .b(in[3]),  .out(orout2) );
+g_OR OR3 ( .a(in[4]),  .b(in[5]),  .out(orout3) );
+g_OR OR4 ( .a(in[6]),  .b(in[7]),  .out(orout4) );
+g_OR ORx ( .a(orout1), .b(orout2), .out(oroutx) );
+g_OR ORy ( .a(orout3), .b(orout4), .out(orouty) );
+g_OR OR  ( .a(oroutx), .b(orouty), .out(out)    );
 
 endmodule

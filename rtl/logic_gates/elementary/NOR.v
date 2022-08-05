@@ -18,8 +18,7 @@
 
 module g_NOR
 (
-    input  a,
-    input  b,
+    input  a, b,
     output out
 );
 
@@ -30,46 +29,11 @@ module g_NOR
 // | 1 | 0 | 0   |
 // | 1 | 1 | 0   |
 
-// (NOT(a) AND NOT(b))
-// assign out = (~a & ~b);
+wire nand_1_out, nand_2_out, nand_3_out, nand_4_out;
 
-// ((a NAND a) AND (b NAND b))
-// (((a NAND a) NAND (b NAND b)) NAND ((a NAND a) NAND (b NAND b)))
-
-wire nand_1_out;
-
-g_NAND NAND_1
-(
-    .a(a),
-    .b(a),
-    .out(nand_1_out)
-);
-
-wire nand_2_out;
-
-g_NAND NAND_2
-(
-    .a(b),
-    .b(b),
-    .out(nand_2_out)
-);
-
-wire nand_3_out;
-
-g_NAND NAND_3
-(
-    .a(nand_1_out),
-    .b(nand_2_out),
-    .out(nand_3_out)
-);
-
-wire nand_4_out;
-
-g_NAND NAND_4
-(
-    .a(nand_3_out),
-    .b(nand_3_out),
-    .out(out)
-);
+g_NAND NAND_1 ( .a(a),          .b(a),          .out(nand_1_out) );
+g_NAND NAND_2 ( .a(b),          .b(b),          .out(nand_2_out) );
+g_NAND NAND_3 ( .a(nand_1_out), .b(nand_2_out), .out(nand_3_out) );
+g_NAND NAND_4 ( .a(nand_3_out), .b(nand_3_out), .out(out) );
 
 endmodule

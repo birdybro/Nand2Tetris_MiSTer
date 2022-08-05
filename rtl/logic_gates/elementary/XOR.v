@@ -18,8 +18,7 @@
 
 module g_XOR
 (
-    input  a,
-    input  b,
+    input  a, b,
     output out
 );
 
@@ -30,49 +29,11 @@ module g_XOR
 // | 1 | 0 | 1   | (a AND NOT(b))
 // | 1 | 1 | 0   |
 
-// (NOT(a) AND b) OR (a AND NOT(b))
+wire nand_1_out, nand_2_out, nand_3_out, nand_4_out;
 
-// You can actually make this assign out = (a ^ b); because ^ is a bitwise XOR operator if you wanted to
-// another way to do this is just assign out = ((~a & b) | (a & ~b));
-// but since this is a composite, let's try and do it at the elementary gate level
-// I will probably get this wrong, but doing it early anyways...
-
-wire nand_1_out;
-
-g_NAND NAND_1
-(
-    .a(a),
-    .b(b),
-    .out(nand_1_out)
-);
-
-wire nand_2_out;
-
-g_NAND NAND_2
-(
-    .a(a),
-    .b(nand_1_out),
-    .out(nand_2_out)
-);
-
-wire nand_3_out;
-
-g_NAND NAND_3
-(
-    .a(nand_2_out),
-    .b(b),
-    .out(nand_3_out)
-);
-
-wire nand_4_out;
-
-g_NAND NAND_4
-(
-    .a(nand_2_out),
-    .b(nand_3_out),
-    .out(nand_4_out)
-);
-
-assign out = nand_4_out;
+g_NAND NAND_1 ( .a(a),          .b(b),          .out(nand_1_out) );
+g_NAND NAND_2 ( .a(a),          .b(nand_1_out), .out(nand_2_out) );
+g_NAND NAND_3 ( .a(nand_2_out), .b(b),          .out(nand_3_out) );
+g_NAND NAND_4 ( .a(nand_2_out), .b(nand_3_out), .out(out) );
 
 endmodule

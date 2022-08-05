@@ -18,8 +18,7 @@
 
 module g_XNOR
 (
-    input  a,
-    input  b,
+    input  a, b,
     output out
 );
 
@@ -30,59 +29,12 @@ module g_XNOR
 // | 1 | 0 | 0   |
 // | 1 | 1 | 1   | (a AND b)
 
-// (NOT(a) AND NOT(b)) OR (a AND b)
+wire nand_1_out, nand_2_out, nand_3_out, nand_4_out, nand_5_out;
 
-// You can actually make this assign out = ~(a ^ b); because ^ is a bitwise XOR operator ~ is N
-// another way to do this is just assign out = ((~a & ~b) | (a & b));
-// but since this is a composite, we could try and do it at the elementary gate level
-// But instead I will do this at the NAND level,
-// this is because many consider the XOR and XNOR to be in the same category
-
-wire nand_1_out;
-
-g_NAND NAND_1
-(
-    .a(a),
-    .b(b),
-    .out(nand_1_out)
-);
-
-wire nand_2_out;
-
-g_NAND NAND_2
-(
-    .a(a),
-    .b(nand_1_out),
-    .out(nand_2_out)
-);
-
-wire nand_3_out;
-
-g_NAND NAND_3
-(
-    .a(nand_2_out),
-    .b(b),
-    .out(nand_3_out)
-);
-
-wire nand_4_out;
-
-g_NAND NAND_4
-(
-    .a(nand_2_out),
-    .b(nand_3_out),
-    .out(nand_4_out)
-);
-
-wire nand_5_out;
-
-g_NAND NAND_5
-(
-    .a(nand_4_out),
-    .b(nand_4_out),
-    .out(nand_5_out)
-);
-
-assign out = nand_5_out;
+g_NAND NAND_1 ( .a(a),          .b(b),          .out(nand_1_out) );
+g_NAND NAND_2 ( .a(a),          .b(nand_1_out), .out(nand_2_out) );
+g_NAND NAND_3 ( .a(nand_2_out), .b(b),          .out(nand_3_out) );
+g_NAND NAND_4 ( .a(nand_2_out), .b(nand_3_out), .out(nand_4_out) );
+g_NAND NAND_5 ( .a(nand_4_out), .b(nand_4_out), .out(out) );
 
 endmodule

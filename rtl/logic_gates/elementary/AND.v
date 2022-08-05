@@ -18,8 +18,7 @@
 
 module g_AND
 (
-    input  a,
-    input  b,
+    input  a, b,
     output out
 );
 
@@ -30,26 +29,9 @@ module g_AND
 // | 1 | 0 | 0   |
 // | 1 | 1 | 1   | (a AND b)
 
-// (a AND b)
-// assign out = a & b;
-
-// NOT(a NAND b)
-// ((a NAND b) NAND (a NAND b))
-
 wire nand_1_out;
 
-g_NAND NAND_1
-(
-    .a(a),
-    .b(b),
-    .out(nand_1_out)
-);
-
-g_NAND NAND_2
-(
-    .a(nand_1_out),
-    .b(nand_1_out),
-    .out(out)
-);
+g_NAND NAND_1 ( .a(a), .b(b), .out(nand_1_out) );
+g_NAND NAND_2 ( .a(nand_1_out), .b(nand_1_out), .out(out) );
 
 endmodule

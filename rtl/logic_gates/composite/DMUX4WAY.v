@@ -20,10 +20,7 @@ module g_DMUX4WAY
 (
     input       in,
     input [1:0] sel,
-    output      a,
-    output      b,
-    output      c,
-    output      d
+    output      a, b, c, d
 );
 
 // | in  | sel  |  a  |  b  |  c  |  d  |
@@ -36,35 +33,10 @@ module g_DMUX4WAY
 // |  1  |  10  |  0  |  0  |  1  |  0  |
 // |  1  |  11  |  0  |  0  |  0  |  1  |
 
-// Normally in verilog you could very easily handle this with something
-// like a case statement or an always @(*) block, etc... however we want
-// to build this out of our elementary and composite blocks instead.
+wire aout, bout;
 
-wire aout;
-wire bout;
-
-g_DMUX DMUX1
-(
-    .in(in),
-    .sel(sel[1]),
-    .a(aout),
-    .b(bout)
-);
-
-g_DMUX DMUX2
-(
-    .in(aout),
-    .sel(sel[0]),
-    .a(a),
-    .b(b)
-);
-
-g_DMUX DMUX3
-(
-    .in(bout),
-    .sel(sel[0]),
-    .a(c),
-    .b(d)
-);
+g_DMUX DMUX1 ( .in(in),   .sel(sel[1]), .a(aout), .b(bout) );
+g_DMUX DMUX2 ( .in(aout), .sel(sel[0]), .a(a),    .b(b) );
+g_DMUX DMUX3 ( .in(bout), .sel(sel[0]), .a(c),    .b(d) );
 
 endmodule

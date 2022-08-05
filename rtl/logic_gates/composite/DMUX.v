@@ -18,10 +18,8 @@
 
 module g_DMUX
 (
-    input  in,
-    input  sel,
-    output a,
-    output b
+    input  in, sel,
+    output a, b
 );
 
 // |  in   |  sel  |   a   |   b   |
@@ -30,30 +28,10 @@ module g_DMUX
 // |   1   |   0   |   1   |   0   |
 // |   1   |   1   |   0   |   1   |
 
-// This sort of thing could easily be handled with a case statement
-// or an always @(*) block with conditionals but we should do it
-// the way the course emphasizes, by using components we designed.
-
 wire notsel;
 
-g_NOT NOT
-(
-    .in(sel),
-    .out(notsel)
-);
-
-g_AND AND1
-(
-    .a(in),
-    .b(notsel),
-    .out(a)
-);
-
-g_AND AND2
-(
-    .a(sel),
-    .b(in),
-    .out(b)
-);
+g_NOT NOT  ( .in(sel), .out(notsel) );
+g_AND AND1 ( .a(in),  .b(notsel), .out(a) );
+g_AND AND2 ( .a(sel), .b(in),     .out(b) );
 
 endmodule

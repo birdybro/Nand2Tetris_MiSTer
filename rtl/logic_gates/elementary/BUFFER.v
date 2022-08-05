@@ -27,30 +27,9 @@ module g_BUFFER
 // | 0  | 0   | (a)
 // | 1  | 1   | (a)
 
-// (a) OR (a)
-// (a)
-// assign out = a;
-
-// NAND(a NAND a)
-
-// The most pointless elementary logic gate for FPGA possible
-// This will just get synth'd away unless I specified the synthesis settings
-// to not change the design at all, which might fail.
-
-// But let's do it anyway!
-
 wire n_out;
 
-g_NAND NANDin
-(
-    .in(in),
-    .out(n_out)
-);
-
-g_NAND NANDout
-(
-    .in(n_out),
-    .out(out)
-);
+g_NAND NANDin ( .in(in), .out(n_out) );
+g_NAND NANDout ( .in(n_out), .out(out) );
 
 endmodule
