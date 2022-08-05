@@ -27,9 +27,9 @@ module g_BUFFER
 // | 0  | 0   | (a)
 // | 1  | 1   | (a)
 
-wire n_out;
+reg n_out;
 
-g_NAND NANDin ( .in(in), .out(n_out) );
-g_NAND NANDout ( .in(n_out), .out(out) );
+g_NAND NANDin  ( .in(in),    .out(n_out) );
+g_NAND NANDout ( .in(n_out), .out(out)   );
 
 endmodule

@@ -36,7 +36,7 @@ module g_DMUX4WAY
 wire aout, bout;
 
 g_DMUX DMUX1 ( .in(in),   .sel(sel[1]), .a(aout), .b(bout) );
-g_DMUX DMUX2 ( .in(aout), .sel(sel[0]), .a(a),    .b(b) );
-g_DMUX DMUX3 ( .in(bout), .sel(sel[0]), .a(c),    .b(d) );
+g_DMUX DMUX2 ( .in(aout), .sel(sel[0]), .a(a),    .b(b)    );
+g_DMUX DMUX3 ( .in(bout), .sel(sel[0]), .a(c),    .b(d)    );
 
 endmodule

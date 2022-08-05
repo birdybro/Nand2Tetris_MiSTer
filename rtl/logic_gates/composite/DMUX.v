@@ -30,8 +30,8 @@ module g_DMUX
 
 wire notsel;
 
-g_NOT NOT  ( .in(sel), .out(notsel) );
-g_AND AND1 ( .a(in),  .b(notsel), .out(a) );
-g_AND AND2 ( .a(sel), .b(in),     .out(b) );
+g_NOT NOT  ( .in(sel),             .out(notsel) );
+g_AND AND1 ( .a (in),  .b(notsel), .out(a)      );
+g_AND AND2 ( .a (sel), .b(in),     .out(b)      );
 
 endmodule

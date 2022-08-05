@@ -31,7 +31,7 @@ module g_AND
 
 wire nand_1_out;
 
-g_NAND NAND_1 ( .a(a), .b(b), .out(nand_1_out) );
+g_NAND NAND_1 ( .a(a),          .b(b),          .out(nand_1_out) );
 g_NAND NAND_2 ( .a(nand_1_out), .b(nand_1_out), .out(out) );
 
 endmodule

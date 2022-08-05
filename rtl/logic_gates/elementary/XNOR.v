@@ -35,6 +35,6 @@ g_NAND NAND_1 ( .a(a),          .b(b),          .out(nand_1_out) );
 g_NAND NAND_2 ( .a(a),          .b(nand_1_out), .out(nand_2_out) );
 g_NAND NAND_3 ( .a(nand_2_out), .b(b),          .out(nand_3_out) );
 g_NAND NAND_4 ( .a(nand_2_out), .b(nand_3_out), .out(nand_4_out) );
-g_NAND NAND_5 ( .a(nand_4_out), .b(nand_4_out), .out(out) );
+g_NAND NAND_5 ( .a(nand_4_out), .b(nand_4_out), .out(out)        );
 
 endmodule
