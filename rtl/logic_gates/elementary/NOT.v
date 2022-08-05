@@ -33,6 +33,8 @@ module g_NOT
 
 // (a NAND a)
 
+wire nand_out;
+
 g_NAND NAND
 (
     .a(in),

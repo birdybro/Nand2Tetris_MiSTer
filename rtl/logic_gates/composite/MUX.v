@@ -24,6 +24,8 @@ module g_MUX
     output out
 );
 
+wire notsel;
+
 g_NOT NOT
 (
     .in(sel),

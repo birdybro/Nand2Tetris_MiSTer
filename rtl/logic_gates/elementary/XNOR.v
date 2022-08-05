@@ -74,6 +74,8 @@ g_NAND NAND_4
     .out(nand_4_out)
 );
 
+wire nand_5_out;
+
 g_NAND NAND_5
 (
     .a(nand_4_out),
