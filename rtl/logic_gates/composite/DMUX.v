@@ -30,6 +30,10 @@ module DMUX
 // |   1   |   0   |   1   |   0   |
 // |   1   |   1   |   0   |   1   |
 
+// This sort of thing could easily be handled with a case statement
+// or an always @(*) block with conditionals but we should do it
+// the way the course emphasizes, by using components we designed.
+
 wire notsel;
 
 NOT NOT
