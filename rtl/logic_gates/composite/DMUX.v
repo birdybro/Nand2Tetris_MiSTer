@@ -24,6 +24,12 @@ module DMUX
     output b
 );
 
+// |  in   |  sel  |   a   |   b   |
+// |   0   |   0   |   0   |   0   |
+// |   0   |   1   |   0   |   0   |
+// |   1   |   0   |   1   |   0   |
+// |   1   |   1   |   0   |   1   |
+
 wire notsel;
 
 NOT NOT
