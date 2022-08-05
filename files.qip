@@ -9,6 +9,10 @@ set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/NAND.v
 set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/NOR.v
 set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/NOT.v
 set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/OR.v
+set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/XNOR.v
+set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/XOR.v
 
 # Composite Logic Gates
-set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/XOR.v
+set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/DMUX.v
+set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/DMUX4WAY.v
+set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/MUX.v
