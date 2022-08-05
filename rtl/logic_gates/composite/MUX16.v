@@ -152,5 +152,4 @@ g_MUX MUX16
     .out(out[15])
 );
 
-
 endmodule

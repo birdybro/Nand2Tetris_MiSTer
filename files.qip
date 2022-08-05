@@ -13,7 +13,11 @@ set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/XNOR.v
 set_global_assignment -name VERILOG_FILE rtl/logic_gates/elementary/XOR.v
 
 # Composite Logic Gates
+set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/AND16.v
 set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/DMUX.v
 set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/DMUX4WAY.v
 set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/MUX.v
+set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/MUX4WAY.v
+set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/MUX16.v
 set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/OR8WAY.v
+set_global_assignment -name VERILOG_FILE rtl/logic_gates/composite/OR16.v
