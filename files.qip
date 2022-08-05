@@ -1,5 +1,5 @@
 # MiSTer FPGA Files
-set_global_assignment -name SYSTEMVERILOG_FILE rtl/Nand2Tetris_top.v
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/Nand2Tetris_top.sv
 set_global_assignment -name SDC_FILE Nand2Tetris.sdc
 set_global_assignment -name SYSTEMVERILOG_FILE Nand2Tetris.sv
 
