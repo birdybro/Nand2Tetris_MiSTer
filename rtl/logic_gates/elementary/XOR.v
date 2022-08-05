@@ -37,49 +37,42 @@ module XOR
 // but since this is a composite, let's try and do it at the elementary gate level
 // I will probably get this wrong, but doing it early anyways...
 
-wire not_1_out;
+wire nand_1_out;
 
-NOT NOT_1
+NAND NAND_1
 (
     .a(a),
-    .out(not_1_out)
+    .b(b),
+    .out(nand_1_out)
 );
 
-wire not_2_out;
+wire nand_2_out;
 
-NOT NOT_2
-(
-    .a(b),
-    .out(not_2_out)
-);
-
-wire and_1_out;
-
-AND AND_1
+NAND NAND_2
 (
     .a(a),
-    .b(not_2_out),
-    .out(and_1_out)
+    .b(nand_1_out),
+    .out(nand_2_out)
 );
 
-wire and_2_out;
+wire nand_3_out;
 
-AND AND_2
+NAND NAND_3
 (
-    .a(not_1_out),
-    .b(a),
-    .out(and_2_out)
+    .a(nand_2_out),
+    .b(b),
+    .out(nand_3_out)
 );
 
-wire or_out;
+wire nand_4_out;
 
-OR OR
+NAND NAND_4
 (
-    .a(and_1_out),
-    .b(and_2_out),
-    .out(or_out)
+    .a(nand_2_out),
+    .b(nand_3_out),
+    .out(nand_4_out)
 );
 
-assign out = or_out; // voila jtXOR.v is complete
+assign out = nand_4_out;
 
 endmodule
