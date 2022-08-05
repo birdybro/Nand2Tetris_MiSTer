@@ -45,24 +45,11 @@ NAND NAND_1
     .out(nand_1_out)
 );
 
-wire nand_2_out;
-
 NAND NAND_2
 (
-    .a(a),
-    .b(b),
-    .out(nand_2_out)
-);
-
-wire nand_3_out;
-
-NAND NAND_3
-(
     .a(nand_1_out),
-    .b(nand_2_out),
-    .out(nand_3_out)
+    .b(nand_1_out),
+    .out(out)
 );
-
-assign out = nand_3_out;
 
 endmodule

@@ -62,9 +62,7 @@ NAND NAND_3
 (
     .a(nand_1_out),
     .b(nand_2_out),
-    .out(nand_3_out)
+    .out(out)
 );
-
-assign out = nand_3_out;
 
 endmodule

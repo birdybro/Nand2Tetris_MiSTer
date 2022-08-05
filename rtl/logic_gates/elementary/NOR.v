@@ -58,8 +58,8 @@ wire nand_3_out;
 
 NAND NAND_3
 (
-    .a(a),
-    .b(a),
+    .a(nand_1_out),
+    .b(nand_2_out),
     .out(nand_3_out)
 );
 
@@ -67,36 +67,9 @@ wire nand_4_out;
 
 NAND NAND_4
 (
-    .a(b),
-    .b(b),
-    .out(nand_4_out)
-);
-
-wire nand_5_out;
-
-NAND NAND_5
-(
-    .a(nand_1_out),
-    .b(nand_2_out),
-    .out(nand_5_out)
-);
-
-wire nand_6_out;
-
-NAND NAND_6
-(
     .a(nand_3_out),
-    .b(nand_4_out),
-    .out(nand_6_out)
+    .b(nand_3_out),
+    .out(out)
 );
-
-NAND NAND_7
-(
-    .a(nand_5_out),
-    .b(nand_6_out),
-    .out(nand_7_out)
-);
-
-assign out = nand_7_out; // bwahahahaha
 
 endmodule
