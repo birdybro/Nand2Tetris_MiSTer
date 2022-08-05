@@ -1,0 +1,13 @@
+CHIP Nor {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+    Nand (a=a, b=a, out=nand1out);
+    Nand (a=b, b=b, out=nand2out);
+    Nand (a=a, b=a, out=nand3out);
+    Nand (a=b, b=b, out=nand4out);
+    Nand (a=nand1out, b=nand2out, out=nand5out);
+    Nand (a=nand3out, b=nand4out, out=nand6out);
+    Nand (a=nand5out, b=nand6out, out=out);
+}
