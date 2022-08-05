@@ -36,3 +36,4 @@ c5_pin_model_dump.txt
 *_netlist
 *.cdf
 **/.DS_Store
+course_files/nand2tetris/tools/bin/Hardware Simulator.dat
