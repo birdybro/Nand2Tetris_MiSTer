@@ -70,8 +70,8 @@ CHIP ALU {
         Mux16 (a=fnoOut, b=false, sel=false, out=out);
 
     // zr - invert fnoOut to get a 1=true condition upon fnoOut=0, then And16
-        Not16 (in=fnoOut, out=NotfnoOut);
-        And16 (a=NotfnoOut, b=true, out[0]=zr, out[1..15]=);
+        Not (in=fnoOut[0], out=NotfnoOut);
+        And (a=NotfnoOut, b=true, out=zr);
 
     // ng - Add16(x,y) needs to be compared against fnoOut I think, but how?
     //      or... just check for this --> ~((x) + (~y)) - being true???
