@@ -69,9 +69,11 @@ CHIP ALU {
         Mux4Way16 (a=fAnd16Out, b=noAnd16Out, c=fAdd16Out, d=noAdd16Out, sel[1]=f, sel[0]=no, out=fnoOut);
         Mux16 (a=fnoOut, b=false, sel=false, out=out);
 
-    // zr - invert fnoOut to get a 1=true condition upon fnoOut=0, then And16
-        Not (in=fnoOut[0], out=NotfnoOut);
-        And (a=NotfnoOut, b=true, out=zr);
+    // zr - do an or operation to only 
+        Or8Way (in=fnoOut[0..7], out=Or8WayLSByte);
+        Or8Way (in=fnoOut[8..15], out=Or8WayMSByte);
+        Or (a=Or8WayLSByte, b=Or8WayMSByte, out=zrCompare);
+        Not (in=zrCompare, out=zr);
 
     // ng - Add16(x,y) needs to be compared against fnoOut I think, but how?
     //      or... just check for this --> ~((x) + (~y)) - being true???
