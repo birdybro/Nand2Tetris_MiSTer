@@ -67,7 +67,7 @@ CHIP ALU {
         Not16 (in=fAnd16Out, out=noAnd16Out);
         Not16 (in=fAdd16Out, out=noAdd16Out);
         Mux4Way16 (a=fAnd16Out, b=noAnd16Out, c=fAdd16Out, d=noAdd16Out, sel[1]=f, sel[0]=no, out[0..7]=LowerfnoOut, out[8..15]=UpperfnoOut);
-        Mux16 (a[0..7]=LowerfnoOut, a[8..15]=UpperfnoOut, b=false, sel=false, out=out);
+        Mux16 (a[0..7]=LowerfnoOut, a[8..15]=UpperfnoOut, b=false, sel=false, out[15]=outMSB, out=out);
 
     // zr - do an or operation to only 
         Or8Way (in=LowerfnoOut, out=Or8WayLSByte);
@@ -75,7 +75,7 @@ CHIP ALU {
         Or (a=Or8WayLSByte, b=Or8WayMSByte, out=zrCompare);
         Not (in=zrCompare, out=zr);
 
-    // ng - use a mux16 to check for no bit being active somehow
-        Mux16 (a=true, b[0..7]=LowerfnoOut, b[8..15]=UpperfnoOut, sel=no, out[15]=ng);
+    // ng - if the MSB of the output is set to 1, then the number is negative
+        And (a=outMSB, b=true, out=ng);
 
 }
