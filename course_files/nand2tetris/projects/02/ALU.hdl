@@ -69,7 +69,7 @@ CHIP ALU {
         Mux4Way16 (a=fAnd16Out, b=noAnd16Out, c=fAdd16Out, d=noAdd16Out, sel[1]=f, sel[0]=no, out[0..7]=LowerfnoOut, out[8..15]=UpperfnoOut);
         Mux16 (a[0..7]=LowerfnoOut, a[8..15]=UpperfnoOut, b=false, sel=false, out[15]=outMSB, out=out);
 
-    // zr - do an or operation to only 
+    // zr - do an or operation to the results of an or8way on the upper and lower bytes. this way if 1 is present it will be 1, and then invert.
         Or8Way (in=LowerfnoOut, out=Or8WayLSByte);
         Or8Way (in=UpperfnoOut, out=Or8WayMSByte);
         Or (a=Or8WayLSByte, b=Or8WayMSByte, out=zrCompare);
