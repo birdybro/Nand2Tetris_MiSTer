@@ -28,13 +28,13 @@
 
 CHIP ALU {
     IN  
-        x[16], y[16],  // 16-bit inputs        
-        zx, // zero the x input?
-        nx, // negate the x input?
-        zy, // zero the y input?
-        ny, // negate the y input?
-        f,  // compute out = x + y (if 1) or x & y (if 0)
-        no; // negate the out output?
+        x[16], y[16], // 16-bit inputs
+        zx, // zero the x input
+        nx, // negate the x input
+        zy, // zero the y input
+        ny, // negate the y input
+        f,  // compute out = x + y (if 1) else x & y (if 0)
+        no; // negate the out output
 
     OUT 
         out[16], // 16-bit output
@@ -42,5 +42,39 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
-   // Put you code here:
+
+    // | z* | n* | out | operation | name  |
+    // | -- | -- | --- | --------- | ----- |
+    // | 0  | 0  | a   | *=*       | *     |
+    // | 0  | 1  | b   | ~*        | *Not  |
+    // | 1  | 0  | c   | *=0       | false |
+    // | 1  | 1  | d   | *=~0      | true  |
+
+        Not16 (in=x, out=xNot);
+        Mux4Way16 (a=x, b=xNot, c=false, d=true, sel[1]=zx, sel[0]=nx, out=xOut);
+        Not16 (in=y, out=yNot);
+        Mux4Way16 (a=y, b=yNot, c=false, d=true, sel[1]=zy, sel[0]=ny, out=yOut);
+
+    // | f | no | out | operation | name         |
+    // | - | -- | --- | --------- | ------------ |
+    // | 0 | 0  | a   | x&y       | fAnd16Out    |
+    // | 0 | 1  | b   | ~x&y      | NotfAnd16Out |
+    // | 1 | 0  | c   | x+y       | fAdd16Out    |
+    // | 1 | 1  | d   | ~x+y      | NotfAdd16Out |
+
+        And16 (a=xOut, b=yOut, out=fAnd16Out);
+        Add16 (a=xOut, b=yOut, out=fAdd16Out);
+        Not16 (in=fAnd16Out, out=noAnd16Out);
+        Not16 (in=fAdd16Out, out=noAdd16Out);
+        Mux4Way16 (a=fAnd16Out, b=noAnd16Out, c=fAdd16Out, d=noAdd16Out, sel[1]=f, sel[0]=no, out=fnoOut);
+        Mux16 (a=fnoOut, b=false, sel=false, out=out);
+
+    // zr - invert fnoOut to get a 1=true condition upon fnoOut=0, then And16
+        Not16 (in=fnoOut, out=NotfnoOut);
+        And16 (a=NotfnoOut, b=true, out[0]=zr, out[1..15]=);
+
+    // ng - Add16(x,y) needs to be compared against fnoOut I think, but how?
+    //      or... just check for this --> ~((x) + (~y)) - being true???
+
+
 }
