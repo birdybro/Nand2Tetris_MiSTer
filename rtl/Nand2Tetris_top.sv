@@ -19,23 +19,78 @@
 
 module Nand2Tetris_top
 (
-	input         clk,
-	input         reset,
+	input  logic       clk,
+	input  logic       reset,
 
-	input         scandoubler,
+	input  logic       scandoubler,
 
-	output reg    ce_pix,
+	output logic       HBlank, VBlank,
+	output logic       HSync, VSync,
+	output logic       ce_pix,
 
-	output reg    HBlank,
-	output reg    HSync,
-	output reg    VBlank,
-	output reg    VSync,
-
-	output  [3:0] vga_r,
-	output  [3:0] vga_g,
-	output  [3:0] vga_b
+	output logic [3:0] vga_r,
+	output logic [3:0] vga_g,
+	output logic [3:0] vga_b
 );
 
+logic        ce;
 
+logic [15:0] x, y;
+logic        zx, nx, zy, ny, f, no;
+logic [15:0] out;
+logic        zr, ng;
+logic        rd_rdy;
+
+ALU ALU
+(
+	.clk(clk),
+	.reset(reset),
+	.ce(ce),
+
+	// Input 16-bit Data
+	.x(x),
+	.y(y),
+
+	// Input Control Bits
+	.zx(zx),
+	.nx(nx),
+	.zy(zy),
+	.ny(ny),
+	.f(f),
+	.no(no),
+
+	//Output 16-bit Data
+	.out(out),
+
+	// Output Control Bits
+	.zr(zr),
+	.ng(ng),
+	.rd_rdy(rd_rdy)
+);
+
+ALU_alt ALU_alt
+(
+	.clk(clk),
+	.reset(reset),
+
+	// Input 16-bit Data
+	.x(x),
+	.y(y),
+
+	// Input Control Bits
+	.zx(zx),
+	.nx(nx),
+	.zy(zy),
+	.ny(ny),
+	.f(f),
+	.no(no),
+
+	//Output 16-bit Data
+	.out(out),
+
+	// Output Control Bits
+	.zr(zr),
+	.ng(ng)
+);
 
 endmodule

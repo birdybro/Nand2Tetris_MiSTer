@@ -262,12 +262,12 @@ Nand2Tetris_top Nand2Tetris_top
 
 	.scandoubler(forced_scandoubler),
 
-	.ce_pix(ce_pix),
-
 	.HBlank(HBlank),
 	.HSync(HSync),
 	.VBlank(VBlank),
 	.VSync(VSync),
+
+	.ce_pix(ce_pix),
 
 	.vga_r(VGA_R),
 	.vga_g(VGA_G),
