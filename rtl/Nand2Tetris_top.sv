@@ -19,27 +19,44 @@
 
 module Nand2Tetris_top
 (
-	input  logic       clk,
-	input  logic       reset,
+	input  logic        clk,
+	input  logic        reset,
 
-	input  logic       scandoubler,
+	input  logic        scandoubler,
 
-	output logic       HBlank, VBlank,
-	output logic       HSync, VSync,
-	output logic       ce_pix,
+	output logic        HBlank, VBlank,
+	output logic        HSync, VSync,
+	output logic        ce_pix,
 
-	output logic [3:0] vga_r,
-	output logic [3:0] vga_g,
-	output logic [3:0] vga_b
+	output logic [15:0] alu_out,
+	output logic        zr_out,
+	output logic        ng_out,
+	output logic        rd_rdy_out,
+
+	output logic [ 3:0] vga_r,
+	output logic [ 3:0] vga_g,
+	output logic [ 3:0] vga_b
 );
 
-logic        ce;
+logic        ce = 1;
 
-logic [15:0] x, y;
-logic        zx, nx, zy, ny, f, no;
+logic [15:0] x  = 0101011011100101;
+logic [15:0] y  = 0110011100001011;
+logic        zx = 0;
+logic        nx = 1;
+logic        zy = 0;
+logic        ny = 0;
+logic        f  = 1;
+logic        no = 1;
 logic [15:0] out;
-logic        zr, ng;
+logic        zr;
+logic        ng;
 logic        rd_rdy;
+
+assign alu_out    = out;
+assign zr_out     = zr;
+assign ng_out     = ng;
+assign rd_rdy_out = rd_rdy;
 
 ALU ALU
 (
@@ -68,29 +85,29 @@ ALU ALU
 	.rd_rdy(rd_rdy)
 );
 
-ALU_alt ALU_alt
-(
-	.clk(clk),
-	.reset(reset),
+// ALU_alt ALU_alt
+// (
+// 	.clk(clk),
+// 	.reset(reset),
 
-	// Input 16-bit Data
-	.x(x),
-	.y(y),
+// 	// Input 16-bit Data
+// 	.x(x),
+// 	.y(y),
 
-	// Input Control Bits
-	.zx(zx),
-	.nx(nx),
-	.zy(zy),
-	.ny(ny),
-	.f(f),
-	.no(no),
+// 	// Input Control Bits
+// 	.zx(zx),
+// 	.nx(nx),
+// 	.zy(zy),
+// 	.ny(ny),
+// 	.f(f),
+// 	.no(no),
 
-	//Output 16-bit Data
-	.out(out),
+// 	//Output 16-bit Data
+// 	.out(out),
 
-	// Output Control Bits
-	.zr(zr),
-	.ng(ng)
-);
+// 	// Output Control Bits
+// 	.zr(zr),
+// 	.ng(ng)
+// );
 
 endmodule

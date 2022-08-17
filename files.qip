@@ -5,7 +5,7 @@ set_global_assignment -name SYSTEMVERILOG_FILE Nand2Tetris.sv
 # Hack Computer
 set_global_assignment -name SYSTEMVERILOG_FILE rtl/Nand2Tetris_top.sv
 set_global_assignment -name SYSTEMVERILOG_FILE rtl/ALU.sv
-set_global_assignment -name SYSTEMVERILOG_FILE rtl/ALU_alt.sv
+#set_global_assignment -name SYSTEMVERILOG_FILE rtl/ALU_alt.sv
 
 # Unused Modules (from learning project)
 # Elementary Logic Gates

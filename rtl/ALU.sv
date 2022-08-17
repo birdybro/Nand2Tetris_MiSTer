@@ -49,15 +49,16 @@ module ALU
     output logic        rd_rdy
 );
 
+logic [15:0] last_x   = 0;
+logic [15:0] last_y   = 0;
+logic [15:0] last_out = 0;
+logic        x_done   = 0;
+logic        y_done   = 0;
+logic        out_done = 0;
+logic        complete = 0;
+logic        finish   = 0;
+
 always_ff begin
-    logic [15:0] last_x   = 0;
-    logic [15:0] last_y   = 0;
-    logic [15:0] last_out = 0;
-    logic        x_done   = 0;
-    logic        y_done   = 0;
-    logic        out_done = 0;
-    logic        complete = 0;
-    logic        finish   = 0;
     if (ce) begin
         if (zx && nx) begin
             last_x <= 16'b1;
