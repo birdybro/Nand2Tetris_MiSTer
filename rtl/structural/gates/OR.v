@@ -24,7 +24,7 @@ module g_OR
 
 wire nor1_out;
 
-g_NOR ( .a(a),        .b(b),        .out(nor1_out), );
-g_NOR ( .a(nor1_out), .b(nor1_out), .out(out)       );
+g_NOR NOR1 ( .a(a),        .b(b),        .out(nor1_out) );
+g_NOR NOR2 ( .a(nor1_out), .b(nor1_out), .out(out)      );
 
 endmodule

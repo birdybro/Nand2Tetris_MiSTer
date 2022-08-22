@@ -28,14 +28,24 @@ module Nand2Tetris_top
 	output logic        HSync, VSync,
 	output logic        ce_pix,
 
-	output logic [15:0] alu_out,
-	output logic        zr_out,
-	output logic        ng_out,
-	output logic        rd_rdy_out,
-
 	output logic [ 3:0] vga_r,
 	output logic [ 3:0] vga_g,
 	output logic [ 3:0] vga_b
+);
+
+c_ALU c_ALU
+(
+	.x(),
+	.y(),
+
+	.zx(),
+	.nx(),
+	.f(),
+	.no(),
+
+	.out(),
+	.zr(),
+	.ng()
 );
 
 endmodule

@@ -24,9 +24,9 @@ module g_XNOR
 
 wire nor1_out, nor2_out, nor3_out;
 
-g_NOR ( .a(a),        .b(b),        .out(nor1_out) );
-g_NOR ( .a(a),        .b(nor1_out), .out(nor2_out) );
-g_NOR ( .a(nor1_out), .b(b),        .out(nor3_out) );
-g_NOR ( .a(nor2_out), .b(nor3_out), .out(out)      );
+g_NOR NOR1 ( .a(a),        .b(b),        .out(nor1_out) );
+g_NOR NOR2 ( .a(a),        .b(nor1_out), .out(nor2_out) );
+g_NOR NOR3 ( .a(nor1_out), .b(b),        .out(nor3_out) );
+g_NOR NOR4 ( .a(nor2_out), .b(nor3_out), .out(out)      );
 
 endmodule

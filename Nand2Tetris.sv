@@ -186,9 +186,14 @@ assign VGA_SCALER  = 0;
 assign VGA_DISABLE = 0;
 assign HDMI_FREEZE = 0;
 
+assign AUDIO_L = 0;
+assign AUDIO_R = 0;
 assign AUDIO_S = 0;
 assign AUDIO_MIX = 0;
 
+assign LED_DISK = 0;
+assign LED_POWER = 0;
+assign LED_USER = 0;
 assign BUTTONS = 0;
 
 //////////////////////////////////////////////////////////////////
@@ -249,19 +254,6 @@ logic VBlank;
 logic VSync;
 logic ce_pix;
 
-logic ng;
-assign LED_USER = ng;
-
-logic zr;
-assign LED_DISK = zr;
-
-logic rd_rdy;
-assign LED_POWER = rd_rdy;
-
-logic [15:0] audio;
-assign AUDIO_L = audio;
-assign AUDIO_R = audio;
-
 Nand2Tetris_top Nand2Tetris_top
 (
 	.clk(clk_sys),
@@ -275,11 +267,6 @@ Nand2Tetris_top Nand2Tetris_top
 	.HBlank(HBlank),
 	.ce_pix(ce_pix),
 
-	.alu_out(audio),
-	.zr_out(zr),
-	.ng_out(ng),
-	.rd_rdy_out(rd_rdy),
-
 	.vga_r(VGA_R),
 	.vga_g(VGA_G),
 	.vga_b(VGA_B)
@@ -291,12 +278,5 @@ assign CE_PIXEL = ce_pix;
 assign VGA_DE = ~(HBlank | VBlank);
 assign VGA_HS = HSync;
 assign VGA_VS = VSync;
-// assign VGA_G  = (!col || col == 2) ? video : 8'd0;
-// assign VGA_R  = (!col || col == 1) ? video : 8'd0;
-// assign VGA_B  = (!col || col == 3) ? video : 8'd0;
-
-// reg  [26:0] act_cnt;
-// always @(posedge clk_sys) act_cnt <= act_cnt + 1'd1; 
-// assign LED_USER    = act_cnt[26]  ? act_cnt[25:18]  > act_cnt[7:0]  : act_cnt[25:18]  <= act_cnt[7:0];
 
 endmodule

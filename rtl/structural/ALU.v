@@ -40,15 +40,8 @@ module c_ALU
     output        zr, ng
 );
 
-wire [15:0] x1, x2;
-wire [15:0] y1, y2;
-wire [15:0] notx1, noty1;
-wire [15:0] and16, add16;
-wire [15:0] func16, notfunc16;
-wire [15:0] ngOut16;
-wire        or1, or2, or_fin;
-
 // zx
+wire [15:0] x1, x2, notx1;
 c_MUX16 MuxZX   ( .a(x), .b(16'b0000000000000000), .sel(zx), .out(x1) );
 
 // nx
@@ -56,6 +49,7 @@ c_NOT16 Not16NX ( .in(x1),                     .out(notx1) );
 c_MUX16 MuxNX   ( .a(x1), .b(notx1), .sel(nx), .out(x2)    );
 
 // zy
+wire [15:0] y1, y2, noty1;
 c_MUX16 MuxZY   ( .a(y), .b(16'b0000000000000000), .sel(zy), .out(y1) );
 
 // ny
@@ -63,18 +57,21 @@ c_NOT16 Not16NY ( .in(y1),                     .out(noty1) );
 c_MUX16 MuxNY   ( .a(y1), .b(noty1), .sel(ny), .out(y2)    );
 
 // f
+wire [15:0] and16, add16, func16;
 c_AND16 And16f  ( .a(x2),    .b(y2),             .out(and16)  );
 c_Add16 Add16f  ( .a(x2),    .b(y2),             .out(add16)  );
 c_MUX16 Mux16f  ( .a(and16), .b(add16), .sel(f), .out(func16) );
 
 // no
+wire [15:0] notfunc16, noOut16;
 c_NOT16 Not16no ( .in(func16),                         .out(notfunc16) );
-c_MUX16 Mux16zr ( .a(func16), .b(notfunc16), .sel(no), .out(ngOut16)   );
+c_MUX16 Mux16no ( .a(func16), .b(notfunc16), .sel(no), .out(noOut16)   );
 
 // ng
 assign ng = ngOut16[15];
 
 // zr
+wire or1, or2, or_fin;
 c_OR8WAY Or8Wayzr1 ( .in(ngOut16[ 7:0]), .out(or1)    );
 c_OR8WAY Or8Wayzr2 ( .in(ngOut16[15:8]), .out(or2)    );
 c_OR     Orzr      ( .a(or1), .b(or2),   .out(or_fin) );
