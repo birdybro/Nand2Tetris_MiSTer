@@ -33,10 +33,6 @@ c_RAM4K RAM4K_A       ( .clk(clk), .in(in), .load(SelA), .address(address[8:0]),
 c_RAM4K RAM4K_B       ( .clk(clk), .in(in), .load(SelB), .address(address[8:0]), .out(OutB) );
 c_RAM4K RAM4K_C       ( .clk(clk), .in(in), .load(SelC), .address(address[8:0]), .out(OutC) );
 c_RAM4K RAM4K_D       ( .clk(clk), .in(in), .load(SelD), .address(address[8:0]), .out(OutD) );
-c_RAM4K RAM4K_E       ( .clk(clk), .in(in), .load(SelE), .address(address[8:0]), .out(OutE) );
-c_RAM4K RAM4K_F       ( .clk(clk), .in(in), .load(SelF), .address(address[8:0]), .out(OutF) );
-c_RAM4K RAM4K_G       ( .clk(clk), .in(in), .load(SelG), .address(address[8:0]), .out(OutG) );
-c_RAM4K RAM4K_H       ( .clk(clk), .in(in), .load(SelH), .address(address[8:0]), .out(OutH) );
 c_Mux4Way16 Mux4Way16 ( .a(OutA), .b(OutB), .c(OutC), .d(OutD), .sel(address[13:12]), .out(out) );
 
 endmodule
