@@ -16,15 +16,18 @@
 //
 //============================================================================
 
-module c_DFF
+module c_Bit
 (
-    input      in,
-    input      clk,
-    output reg out
+    input clk,
+    input in, load,
+    output out
 );
 
-always @(posedge clk) begin
-    out <= in;
-end
+wire MuxOut, DFFOut;
+
+c_Mux Mux1 ( .a(DFFOut), .b(in), .sel(load), .out(MuxOut) );
+c_DFF DFF1 ( .clk(clk), .in(MuxOut), .out(DFFOut) );
+
+assign out = DFFOut;
 
 endmodule

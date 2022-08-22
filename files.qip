@@ -21,6 +21,7 @@ set_global_assignment -name VERILOG_FILE rtl/structural/chips/2to4Dec.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/4to2Enc.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/Add16.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/And16.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/Bit.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/DFF.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/Dmux.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/Dmux4Way.v
