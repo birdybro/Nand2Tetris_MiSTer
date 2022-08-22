@@ -67,8 +67,11 @@ wire [15:0] notfunc16, noOut16;
 c_Not16 Not16no ( .in(func16),                         .out(notfunc16) );
 c_Mux16 Mux16no ( .a(func16), .b(notfunc16), .sel(no), .out(noOut16)   );
 
+// out
+assign out = noOut16;
+
 // ng
-assign ng = noOut16[15];
+assign ng  = noOut16[15];
 
 // zr
 wire or1, or2, or_fin;
