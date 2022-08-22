@@ -16,22 +16,17 @@
 //
 //============================================================================
 
-module g_AND
+module g_XNOR
 (
     input  a, b,
     output out
 );
 
-// | a | b | out |
-// | - | - | --- |
-// | 0 | 0 | 0   |
-// | 0 | 1 | 0   |
-// | 1 | 0 | 0   |
-// | 1 | 1 | 1   | (a AND b)
+wire nor1_out, nor2_out, nor3_out;
 
-wire nand_1_out;
-
-g_NAND NAND_1 ( .a(a),          .b(b),          .out(nand_1_out) );
-g_NAND NAND_2 ( .a(nand_1_out), .b(nand_1_out), .out(out) );
+g_NOR ( .a(a),        .b(b),        .out(nor1_out) );
+g_NOR ( .a(a),        .b(nor1_out), .out(nor2_out) );
+g_NOR ( .a(nor1_out), .b(b),        .out(nor3_out) );
+g_NOR ( .a(nor2_out), .b(nor3_out), .out(out)      );
 
 endmodule

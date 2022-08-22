@@ -16,20 +16,12 @@
 //
 //============================================================================
 
-module g_BUFFER
+module g_NAND
 (
-    input  in,
+    input  a, b,
     output out
 );
 
-// | in | out |
-// | -- | --- |
-// | 0  | 0   | (a)
-// | 1  | 1   | (a)
-
-reg n_out;
-
-g_NAND NANDin  ( .in(in),    .out(n_out) );
-g_NAND NANDout ( .in(n_out), .out(out)   );
+assign out = ~(a & b);
 
 endmodule

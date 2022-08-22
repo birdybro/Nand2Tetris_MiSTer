@@ -16,20 +16,16 @@
 //
 //============================================================================
 
-module g_OR8WAY
+module c_DMUX
 (
-    input [7:0] in,
-    output      out
+    input  in, sel,
+    output a, b
 );
 
-wire orout1, orout2, orout3, orout4, oroutx, orouty;
+wire notsel;
 
-g_OR OR1 ( .a(in[0]),  .b(in[1]),  .out(orout1) );
-g_OR OR2 ( .a(in[2]),  .b(in[3]),  .out(orout2) );
-g_OR OR3 ( .a(in[4]),  .b(in[5]),  .out(orout3) );
-g_OR OR4 ( .a(in[6]),  .b(in[7]),  .out(orout4) );
-g_OR ORx ( .a(orout1), .b(orout2), .out(oroutx) );
-g_OR ORy ( .a(orout3), .b(orout4), .out(orouty) );
-g_OR OR  ( .a(oroutx), .b(orouty), .out(out)    );
+g_NOT NOT  ( .in(sel),             .out(notsel) );
+g_AND AND1 ( .a (in),  .b(notsel), .out(a)      );
+g_AND AND2 ( .a (sel), .b(in),     .out(b)      );
 
 endmodule

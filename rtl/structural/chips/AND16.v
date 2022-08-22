@@ -16,13 +16,11 @@
 //
 //============================================================================
 
-module g_AND16
+module c_AND16
 (
     input  [15:0] a, b,
     output [15:0] out
 );
-
-// 16-bit AND operation
 
 g_AND AND1  ( .a(a[0]),  .b(b[0]),  .out(out[0] ) );
 g_AND AND2  ( .a(a[1]),  .b(b[1]),  .out(out[1] ) );

@@ -1,4 +1,3 @@
-
 //============================================================================
 //
 //  This program is free software; you can redistribute it and/or modify it
@@ -17,25 +16,15 @@
 //
 //============================================================================
 
-module Nand2Tetris_top
+module g_BUFFER
 (
-	input  logic        clk,
-	input  logic        reset,
-
-	input  logic        scandoubler,
-
-	output logic        HBlank, VBlank,
-	output logic        HSync, VSync,
-	output logic        ce_pix,
-
-	output logic [15:0] alu_out,
-	output logic        zr_out,
-	output logic        ng_out,
-	output logic        rd_rdy_out,
-
-	output logic [ 3:0] vga_r,
-	output logic [ 3:0] vga_g,
-	output logic [ 3:0] vga_b
+    input  in,
+    output out
 );
+
+reg n_out;
+
+g_NAND NANDin  ( .in(in),    .out(n_out) );
+g_NAND NANDout ( .in(n_out), .out(out)   );
 
 endmodule

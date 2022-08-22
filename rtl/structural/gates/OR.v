@@ -16,17 +16,15 @@
 //
 //============================================================================
 
-module g_MUX
+module g_OR
 (
-    input  a, b, sel,
+    input  a, b,
     output out
 );
 
-wire notsel, and1, and2;
+wire nor1_out;
 
-g_NOT NOT  ( .in(sel),             .out(notsel) );
-g_AND AND1 ( .a(notsel), .b(a),    .out(and1)   );
-g_AND AND2 ( .a(b),      .b(sel),  .out(and2)   );
-g_OR  OR   ( .a(and2),   .b(and1), .out(out)    );
+g_NOR ( .a(a),        .b(b),        .out(nor1_out), );
+g_NOR ( .a(nor1_out), .b(nor1_out), .out(out)       );
 
 endmodule

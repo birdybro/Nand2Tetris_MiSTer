@@ -4,25 +4,27 @@ set_global_assignment -name SYSTEMVERILOG_FILE Nand2Tetris.sv
 
 # Hack Computer
 set_global_assignment -name SYSTEMVERILOG_FILE rtl/Nand2Tetris_top.sv
-set_global_assignment -name SYSTEMVERILOG_FILE rtl/ALU.sv
-#set_global_assignment -name SYSTEMVERILOG_FILE rtl/ALU_alt.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/structural/ALU.s
 
-# Unused Modules (from learning project)
 # Elementary Logic Gates
-#set_global_assignment -name VERILOG_FILE rtl/gates/AND.v
-#set_global_assignment -name VERILOG_FILE rtl/gates/BUFFER.v
-#set_global_assignment -name VERILOG_FILE rtl/gates/NAND.v
-#set_global_assignment -name VERILOG_FILE rtl/gates/NOR.v
-#set_global_assignment -name VERILOG_FILE rtl/gates/NOT.v
-#set_global_assignment -name VERILOG_FILE rtl/gates/OR.v
-#set_global_assignment -name VERILOG_FILE rtl/gates/XNOR.v
-#set_global_assignment -name VERILOG_FILE rtl/gates/XOR.v
+set_global_assignment -name VERILOG_FILE rtl/structural/gates/AND.v
+set_global_assignment -name VERILOG_FILE rtl/structural/gates/BUFFER.v
+set_global_assignment -name VERILOG_FILE rtl/structural/gates/NAND.v
+set_global_assignment -name VERILOG_FILE rtl/structural/gates/NOR.v
+set_global_assignment -name VERILOG_FILE rtl/structural/gates/NOT.v
+set_global_assignment -name VERILOG_FILE rtl/structural/gates/OR.v
+set_global_assignment -name VERILOG_FILE rtl/structural/gates/XNOR.v
+set_global_assignment -name VERILOG_FILE rtl/structural/gates/XOR.v
 
 # Composite Logic Gates
-#set_global_assignment -name VERILOG_FILE rtl/gates/AND16.v
-#set_global_assignment -name VERILOG_FILE rtl/gates/DMUX.v
-#set_global_assignment -name VERILOG_FILE rtl/gates/DMUX4WAY.v
-#set_global_assignment -name VERILOG_FILE rtl/gates/MUX.v
-#set_global_assignment -name VERILOG_FILE rtl/gates/MUX16.v
-#set_global_assignment -name VERILOG_FILE rtl/gates/OR8WAY.v
-#set_global_assignment -name VERILOG_FILE rtl/gates/OR16.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/AND16.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/DMUX.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/DMUX4WAY.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/MUX.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/MUX16.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/NOT16.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/OR8WAY.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/OR16.v
+
+# Behavioral Modules (unused currently)
+#set_global_assignment -name SYSTEMVERILOG_FILE rtl/ALU.sv

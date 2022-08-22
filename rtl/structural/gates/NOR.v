@@ -16,27 +16,12 @@
 //
 //============================================================================
 
-module g_DMUX4WAY
+module g_NOR
 (
-    input       in,
-    input [1:0] sel,
-    output      a, b, c, d
+    input  a, b,
+    output out
 );
 
-// | in  | sel  |  a  |  b  |  c  |  d  |
-// |  0  |  00  |  0  |  0  |  0  |  0  |
-// |  0  |  01  |  0  |  0  |  0  |  0  |
-// |  0  |  10  |  0  |  0  |  0  |  0  |
-// |  0  |  11  |  0  |  0  |  0  |  0  |
-// |  1  |  00  |  1  |  0  |  0  |  0  |
-// |  1  |  01  |  0  |  1  |  0  |  0  |
-// |  1  |  10  |  0  |  0  |  1  |  0  |
-// |  1  |  11  |  0  |  0  |  0  |  1  |
-
-wire aout, bout;
-
-g_DMUX DMUX1 ( .in(in),   .sel(sel[1]), .a(aout), .b(bout) );
-g_DMUX DMUX2 ( .in(aout), .sel(sel[0]), .a(a),    .b(b)    );
-g_DMUX DMUX3 ( .in(bout), .sel(sel[0]), .a(c),    .b(d)    );
+assign out = ~(a | b);
 
 endmodule

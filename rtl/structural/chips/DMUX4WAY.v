@@ -16,25 +16,17 @@
 //
 //============================================================================
 
-module g_XNOR
+module c_DMUX4WAY
 (
-    input  a, b,
-    output out
+    input        in,
+    input  [1:0] sel,
+    output       a, b, c, d
 );
 
-// | a | b | out |
-// | - | - | --- |
-// | 0 | 0 | 1   | (NOT(a) AND NOT(b))
-// | 0 | 1 | 0   |
-// | 1 | 0 | 0   |
-// | 1 | 1 | 1   | (a AND b)
+wire aout, bout;
 
-wire nand_1_out, nand_2_out, nand_3_out, nand_4_out, nand_5_out;
-
-g_NAND NAND_1 ( .a(a),          .b(b),          .out(nand_1_out) );
-g_NAND NAND_2 ( .a(a),          .b(nand_1_out), .out(nand_2_out) );
-g_NAND NAND_3 ( .a(nand_2_out), .b(b),          .out(nand_3_out) );
-g_NAND NAND_4 ( .a(nand_2_out), .b(nand_3_out), .out(nand_4_out) );
-g_NAND NAND_5 ( .a(nand_4_out), .b(nand_4_out), .out(out)        );
+g_DMUX DMUX1 ( .in(in),   .sel(sel[1]), .a(aout), .b(bout) );
+g_DMUX DMUX2 ( .in(aout), .sel(sel[0]), .a(a),    .b(b)    );
+g_DMUX DMUX3 ( .in(bout), .sel(sel[0]), .a(c),    .b(d)    );
 
 endmodule

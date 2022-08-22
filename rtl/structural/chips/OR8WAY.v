@@ -16,17 +16,20 @@
 //
 //============================================================================
 
-module g_NOT
+module c_OR8WAY
 (
-    input  in,
-    output out
+    input  [7:0] in,
+    output       out
 );
 
-// | a | out |
-// | - | --- |
-// | 0 | 1   | NOT(a)
-// | 1 | 0   | NOT(a)
+wire orout1, orout2, orout3, orout4, oroutx, orouty;
 
-g_NAND NAND ( .a(in), .b(in), .out(out) );
+g_OR OR1 ( .a(in[0]),  .b(in[1]),  .out(orout1) );
+g_OR OR2 ( .a(in[2]),  .b(in[3]),  .out(orout2) );
+g_OR OR3 ( .a(in[4]),  .b(in[5]),  .out(orout3) );
+g_OR OR4 ( .a(in[6]),  .b(in[7]),  .out(orout4) );
+g_OR ORx ( .a(orout1), .b(orout2), .out(oroutx) );
+g_OR ORy ( .a(orout3), .b(orout4), .out(orouty) );
+g_OR OR  ( .a(oroutx), .b(orouty), .out(out)    );
 
 endmodule

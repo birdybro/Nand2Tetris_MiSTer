@@ -16,24 +16,17 @@
 //
 //============================================================================
 
-module g_NOR
+module c_ALU
 (
-    input  a, b,
-    output out
+    input  [15:0] x, y,
+    input         zx, nx,
+    input         zy, ny,
+    input         f, no,
+
+    output [15:0] out,
+    output        zr, ng
 );
 
-// | a | b | out |
-// | - | - | --- |
-// | 0 | 0 | 1   | (NOT(a) AND NOT(b))
-// | 0 | 1 | 0   |
-// | 1 | 0 | 0   |
-// | 1 | 1 | 0   |
 
-wire nand_1_out, nand_2_out, nand_3_out, nand_4_out;
-
-g_NAND NAND_1 ( .a(a),          .b(a),          .out(nand_1_out) );
-g_NAND NAND_2 ( .a(b),          .b(b),          .out(nand_2_out) );
-g_NAND NAND_3 ( .a(nand_1_out), .b(nand_2_out), .out(nand_3_out) );
-g_NAND NAND_4 ( .a(nand_3_out), .b(nand_3_out), .out(out)        );
 
 endmodule

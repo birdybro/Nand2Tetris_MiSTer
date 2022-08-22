@@ -16,23 +16,12 @@
 //
 //============================================================================
 
-module g_OR
+module g_NOT
 (
-    input  a, b,
+    input  in,
     output out
 );
 
-// | a | b | out |
-// | - | - | --  |
-// | 0 | 0 | 0   |
-// | 0 | 1 | 1   | (NOT(a) AND b)
-// | 1 | 0 | 1   | (a AND NOT(b))
-// | 1 | 1 | 1   | (a AND b)
-
-wire nand_1_out, nand_2_out, nand_3_out;
-
-g_NAND NAND_1 ( .a(a),          .b(a),          .out(nand_1_out) );
-g_NAND NAND_2 ( .a(b),          .b(b),          .out(nand_2_out) );
-g_NAND NAND_3 ( .a(nand_1_out), .b(nand_2_out), .out(out)        );
+g_NAND NAND ( .a(in), .b(in), .out(out) );
 
 endmodule
