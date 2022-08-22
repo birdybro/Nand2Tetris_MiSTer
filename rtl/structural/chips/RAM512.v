@@ -29,14 +29,14 @@ wire        SelA, SelB, SelC, SelD, SelE, SelF, SelG, SelH;
 wire [15:0] OutA, OutB, OutC, OutD, OutE, OutF, OutG, OutH;
 
 c_DMux8Way DMuxy8Way  ( .in(load), .sel(address[8:6]), .a(SelA), .b(SelB), .c(SelC), .d(SelD), .e(SelE), .f(SelF), .g(SelG), .h(SelH) );
-c_RAM64 RAM64A        ( .in(in), .load(SelA), .address(address[5:0]), .out(OutA) );
-c_RAM64 RAM64B        ( .in(in), .load(SelB), .address(address[5:0]), .out(OutB) );
-c_RAM64 RAM64C        ( .in(in), .load(SelC), .address(address[5:0]), .out(OutC) );
-c_RAM64 RAM64D        ( .in(in), .load(SelD), .address(address[5:0]), .out(OutD) );
-c_RAM64 RAM64E        ( .in(in), .load(SelE), .address(address[5:0]), .out(OutE) );
-c_RAM64 RAM64F        ( .in(in), .load(SelF), .address(address[5:0]), .out(OutF) );
-c_RAM64 RAM64G        ( .in(in), .load(SelG), .address(address[5:0]), .out(OutG) );
-c_RAM64 RAM64H        ( .in(in), .load(SelH), .address(address[5:0]), .out(OutH) );
+c_RAM64 RAM64A        ( .clk(clk), .in(in), .load(SelA), .address(address[5:0]), .out(OutA) );
+c_RAM64 RAM64B        ( .clk(clk), .in(in), .load(SelB), .address(address[5:0]), .out(OutB) );
+c_RAM64 RAM64C        ( .clk(clk), .in(in), .load(SelC), .address(address[5:0]), .out(OutC) );
+c_RAM64 RAM64D        ( .clk(clk), .in(in), .load(SelD), .address(address[5:0]), .out(OutD) );
+c_RAM64 RAM64E        ( .clk(clk), .in(in), .load(SelE), .address(address[5:0]), .out(OutE) );
+c_RAM64 RAM64F        ( .clk(clk), .in(in), .load(SelF), .address(address[5:0]), .out(OutF) );
+c_RAM64 RAM64G        ( .clk(clk), .in(in), .load(SelG), .address(address[5:0]), .out(OutG) );
+c_RAM64 RAM64H        ( .clk(clk), .in(in), .load(SelH), .address(address[5:0]), .out(OutH) );
 c_Mux8Way16 Mux8Way16 ( .a(OutA), .b(OutB), .c(OutC), .d(OutD), .e(OutE), .f(OutF), .g(OutG), .h(OutH), .sel(address[8:6]), .out(out) );
 
 endmodule
