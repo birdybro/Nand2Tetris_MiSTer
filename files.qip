@@ -21,6 +21,9 @@ set_global_assignment -name VERILOG_FILE rtl/structural/chips/Add16.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/And16.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/Dmux.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/Dmux4Way.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/FullAdder.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/HalfAdder.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/Inc16.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/Mux.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/Mux16.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/Not16.v
