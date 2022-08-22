@@ -16,7 +16,7 @@
 //
 //============================================================================
 
-module c_DMUX4WAY
+module c_DMux4Way
 (
     input        in,
     input  [1:0] sel,
@@ -25,8 +25,8 @@ module c_DMUX4WAY
 
 wire aout, bout;
 
-c_DMUX DMUX1 ( .in(in),   .sel(sel[1]), .a(aout), .b(bout) );
-c_DMUX DMUX2 ( .in(aout), .sel(sel[0]), .a(a),    .b(b)    );
-c_DMUX DMUX3 ( .in(bout), .sel(sel[0]), .a(c),    .b(d)    );
+c_DMux DMux1 ( .in(in),   .sel(sel[1]), .a(aout), .b(bout) );
+c_DMux DMux2 ( .in(aout), .sel(sel[0]), .a(a),    .b(b)    );
+c_DMux DMux3 ( .in(bout), .sel(sel[0]), .a(c),    .b(d)    );
 
 endmodule

@@ -16,15 +16,16 @@ set_global_assignment -name VERILOG_FILE rtl/structural/gates/OR.v
 set_global_assignment -name VERILOG_FILE rtl/structural/gates/XNOR.v
 set_global_assignment -name VERILOG_FILE rtl/structural/gates/XOR.v
 
-# Composite Logic Gates
-set_global_assignment -name VERILOG_FILE rtl/structural/chips/AND16.v
-set_global_assignment -name VERILOG_FILE rtl/structural/chips/DMUX.v
-set_global_assignment -name VERILOG_FILE rtl/structural/chips/DMUX4WAY.v
-set_global_assignment -name VERILOG_FILE rtl/structural/chips/MUX.v
-set_global_assignment -name VERILOG_FILE rtl/structural/chips/MUX16.v
-set_global_assignment -name VERILOG_FILE rtl/structural/chips/NOT16.v
-set_global_assignment -name VERILOG_FILE rtl/structural/chips/OR8WAY.v
-set_global_assignment -name VERILOG_FILE rtl/structural/chips/OR16.v
+# Composite Logic Chips
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/Add16.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/And16.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/Dmux.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/Dmux4Way.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/Mux.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/Mux16.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/Not16.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/Or8Way.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/Or16.v
 
 # Behavioral Modules (unused currently)
 #set_global_assignment -name SYSTEMVERILOG_FILE rtl/ALU.sv

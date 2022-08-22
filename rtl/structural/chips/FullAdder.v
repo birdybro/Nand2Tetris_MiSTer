@@ -26,6 +26,6 @@ wire sum_1, carry_1, carry_2;
 
 c_HalfAdder HalfAdder1 ( .a(a),       .b(b),       .sum(sum_1), .carry(carry_1) );
 c_HalfAdder HalfAdder2 ( .a(c),       .b(sum_1),   .sum(sum),   .carry(carry_2) );
-g_OR Or1               ( .a(carry_1), .b(carry_2), .out(carry)                  );
+g_OR OR1               ( .a(carry_1), .b(carry_2), .out(carry)                  );
 
 endmodule

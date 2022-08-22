@@ -22,7 +22,7 @@ module c_HalfAdder
     output sum, carry
 );
 
-g_XOR XOR0 ( .a(a), .b(b), .out(sum)   );
-g_AND AND0 ( .a(a), .b(b), .out(carry) );
+g_XOR XOR1 ( .a(a), .b(b), .out(sum)   );
+g_AND AND1 ( .a(a), .b(b), .out(carry) );
 
 endmodule
