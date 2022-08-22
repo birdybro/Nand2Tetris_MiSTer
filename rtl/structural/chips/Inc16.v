@@ -22,6 +22,6 @@ module c_Inc16
     output [15:0] out
 );
 
-c_Add16 Add16 ( .a(in), b(16'b0000000000000001), .out(out) );
+c_Add16 Add16 ( .a(in), .b(16'b0000000000000001), .out(out) );
 
 endmodule
