@@ -4,7 +4,7 @@ set_global_assignment -name SYSTEMVERILOG_FILE Nand2Tetris.sv
 
 # Hack Computer
 set_global_assignment -name SYSTEMVERILOG_FILE rtl/Nand2Tetris_top.sv
-set_global_assignment -name SYSTEMVERILOG_FILE rtl/structural/ALU.s
+set_global_assignment -name VERILOG_FILE rtl/structural/ALU.v
 
 # Elementary Logic Gates
 set_global_assignment -name VERILOG_FILE rtl/structural/gates/AND.v
