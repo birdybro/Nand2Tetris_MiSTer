@@ -68,12 +68,12 @@ c_NOT16 Not16no ( .in(func16),                         .out(notfunc16) );
 c_MUX16 Mux16no ( .a(func16), .b(notfunc16), .sel(no), .out(noOut16)   );
 
 // ng
-assign ng = ngOut16[15];
+assign ng = noOut16[15];
 
 // zr
 wire or1, or2, or_fin;
-c_OR8WAY Or8Wayzr1 ( .in(ngOut16[ 7:0]), .out(or1)    );
-c_OR8WAY Or8Wayzr2 ( .in(ngOut16[15:8]), .out(or2)    );
+c_OR8WAY Or8Wayzr1 ( .in(noOut16[ 7:0]), .out(or1)    );
+c_OR8WAY Or8Wayzr2 ( .in(noOut16[15:8]), .out(or2)    );
 c_OR     Orzr      ( .a(or1), .b(or2),   .out(or_fin) );
 g_NOT    Notzr     ( .in(or_fin),        .out(zr)     );
 
