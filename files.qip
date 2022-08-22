@@ -36,6 +36,7 @@ set_global_assignment -name VERILOG_FILE rtl/structural/chips/Mux8Way16.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/Not16.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/Or8Way.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/Or16.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/RAM4K.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/RAM8.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/RAM64.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/RAM512.v
