@@ -21,7 +21,7 @@ module c_RAM8
     input         clk,
     input  [15:0] in,
     input         load,
-    input         address,
+    input  [ 2:0] address,
     output [15:0] out
 );
 
