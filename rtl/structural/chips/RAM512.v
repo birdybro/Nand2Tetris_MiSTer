@@ -16,27 +16,27 @@
 //
 //============================================================================
 
-module c_RAM8
+module c_RAM512
 (
     input         clk,
     input  [15:0] in,
     input         load,
-    input  [ 2:0] address,
+    input  [ 8:0] address,
     output [15:0] out
 );
 
 wire        SelA, SelB, SelC, SelD, SelE, SelF, SelG, SelH;
 wire [15:0] OutA, OutB, OutC, OutD, OutE, OutF, OutG, OutH;
 
-c_DMux8Way DMux8Way   ( .in(load), .sel(address), .a(SelA), .b(SelB), .c(SelC), .d(SelD), .e(SelE), .f(SelF), .g(SelG), .h(SelH) );
-c_Register RegisterA  ( .clk(clk), .in(in), .load(SelA), .out(OutA) );
-c_Register RegisterB  ( .clk(clk), .in(in), .load(SelB), .out(OutB) );
-c_Register RegisterC  ( .clk(clk), .in(in), .load(SelC), .out(OutC) );
-c_Register RegisterD  ( .clk(clk), .in(in), .load(SelD), .out(OutD) );
-c_Register RegisterE  ( .clk(clk), .in(in), .load(SelE), .out(OutE) );
-c_Register RegisterF  ( .clk(clk), .in(in), .load(SelF), .out(OutF) );
-c_Register RegisterG  ( .clk(clk), .in(in), .load(SelG), .out(OutG) );
-c_Register RegisterH  ( .clk(clk), .in(in), .load(SelH), .out(OutH) );
-c_Mux8Way16 Mux8Way16 ( .a(OutA), .b(OutB), .c(OutC), .d(OutD), .e(OutE), .f(OutF), .g(OutG), .h(OutH), .sel(address), .out(out) );
+c_DMux8Way DMuxy8Way  ( .in(load), .sel(address[8:6]), .a(SelA), .b(SelB), .c(SelC), .d(SelD), .e(SelE), .f(SelF), .g(SelG), .h(SelH) );
+c_RAM64 RAM64A        ( .in(in), .load(SelA), .address(address[5:0]), .out(OutA) );
+c_RAM64 RAM64B        ( .in(in), .load(SelB), .address(address[5:0]), .out(OutB) );
+c_RAM64 RAM64C        ( .in(in), .load(SelC), .address(address[5:0]), .out(OutC) );
+c_RAM64 RAM64D        ( .in(in), .load(SelD), .address(address[5:0]), .out(OutD) );
+c_RAM64 RAM64E        ( .in(in), .load(SelE), .address(address[5:0]), .out(OutE) );
+c_RAM64 RAM64F        ( .in(in), .load(SelF), .address(address[5:0]), .out(OutF) );
+c_RAM64 RAM64G        ( .in(in), .load(SelG), .address(address[5:0]), .out(OutG) );
+c_RAM64 RAM64H        ( .in(in), .load(SelH), .address(address[5:0]), .out(OutH) );
+c_Mux8Way16 Mux8Way16 ( .a(OutA), .b(OutB), .c(OutC), .d(OutD), .e(OutE), .f(OutF), .g(OutG), .h(OutH), .sel(address[8:6]), .out(out) );
 
 endmodule

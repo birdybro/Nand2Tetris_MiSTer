@@ -38,6 +38,7 @@ set_global_assignment -name VERILOG_FILE rtl/structural/chips/Or8Way.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/Or16.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/RAM8.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/RAM64.v
+set_global_assignment -name VERILOG_FILE rtl/structural/chips/RAM512.v
 set_global_assignment -name VERILOG_FILE rtl/structural/chips/Register.v
 
 # Behavioral Modules (unused currently)
