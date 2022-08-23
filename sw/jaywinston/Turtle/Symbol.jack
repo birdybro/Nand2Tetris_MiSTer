@@ -1,0 +1,54 @@
+/* Depends on Str.jack */
+
+class Symbol {
+
+    field int meta, data;
+    field String tag;
+
+    constructor Symbol new(String t, int m, int d) {
+        let tag  = t;
+        let meta = m;
+        let data = d;
+        return this;
+    }
+
+    method void dispose() {
+
+        if (~(tag = null)) {
+            do tag.dispose();
+        }
+
+        do Memory.deAlloc(this);
+
+        return;
+    }
+
+    method int tag() {
+        return tag;
+    }
+
+    method int meta() {
+        return meta;
+    }
+
+    method int data() {
+        return data;
+    }
+
+    method void setTag(int t) {
+        let tag = t;
+        return;
+    }
+
+
+    method void setMeta(int m) {
+        let meta = m;
+        return;
+    }
+
+    method void setData(int d) {
+        let data = d;
+        return;
+    }
+
+}

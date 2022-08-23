@@ -1,0 +1,161 @@
+class Turtle {
+
+    static int TLEN;
+
+    field boolean pendown;
+    field int direction, x, y;
+    field Array target;
+    field Vector v;
+    field ScreenArea sa;
+
+
+    function void init(int tlen) {
+        let TLEN = tlen;
+        return;
+    }
+
+
+    constructor Turtle new(int ix, int iy, int d) {
+        /* todo: validate coordinates */
+        let x = ix;
+        let y = iy;
+        let direction = setDirection(d);
+        let target = Array.new(2);
+        let target[0] = -1;
+        let v = Vector.new();
+        let sa = ScreenArea.new(TLEN*8, TLEN*8);
+        let pendown = false;
+        do show();
+        return this;
+    }
+
+
+    method void dispose() {
+        do hide();
+        do v.dispose();
+        do sa.dispose();
+        do target.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+
+    method int setDirection(int d) {
+        let direction = Vector.mod(d, 360);
+        if (direction < 0) {
+            let direction = direction + 360;
+        }
+        return direction;
+    }
+
+
+    method int direction() {
+        return direction;
+    }
+
+
+    method int x() {
+        return x;
+    }
+
+
+    method int y() {
+        return y;
+    }
+
+
+    method void drawTurtle(boolean color) {
+        var int x1, y1;
+
+        do Screen.setColor(color);
+
+        do Screen.drawCircle(x, y, TLEN);
+
+        do v.calculate(TLEN*3, direction);
+        let x1 = x + v.re();
+        let y1 = y - v.im();
+
+        do v.calculate(TLEN*5, direction+20);
+        do Screen.drawLine(x1, y1, x1-v.re(), y1+v.im());
+        do v.calculate(TLEN*5, direction-20);
+        do Screen.drawLine(x1, y1, x1-v.re(), y1+v.im());
+
+        return;
+    }
+
+
+    method void show() {
+        do sa.copy(x-(TLEN*4), y-(TLEN*4));
+        do drawTurtle(true);
+        return;
+    }
+
+
+    method void hide() {
+        do drawTurtle(false);
+        do sa.restore();
+        return;
+    }
+
+
+    method int turn(int d) {
+        do hide();
+        do setDirection(direction + d);
+        do show();
+        return direction;
+    }
+
+
+    method int turnleft(int d) {
+        return turn(d);
+    }
+
+
+    method int turnright(int d) {
+        return turn(-d);
+    }
+
+
+    method Array aim(int l) {
+        do v.calculate(l, direction);
+        let target[0] = x + v.re();
+        let target[1] = y - v.im();
+        return target;
+    }
+
+
+    method Array forward(int l) {
+
+        if (target[0] = -1) {
+            do aim(l);
+        }
+
+        do hide();
+
+        if (pendown) {
+            do Screen.setColor(true);
+            do Screen.drawLine(x, y, target[0], target[1]);
+        }
+
+        let x = target[0];
+        let y = target[1];
+        let target[0] = -1;
+
+        do show();
+
+        return target;
+    }
+
+
+    method void penup() {
+        let pendown = false;
+        return;
+    }
+
+
+    method void pendown() {
+        let pendown = true;
+        return;
+    }
+
+}

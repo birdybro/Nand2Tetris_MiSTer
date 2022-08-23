@@ -1,0 +1,151 @@
+class HashTable {
+
+    field int HASHSIZ;
+    field Array table;
+
+
+    constructor HashTable new(int hsize) {
+        var int i;
+
+        let HASHSIZ = hsize;
+        let table = Array.new(HASHSIZ);
+        let i = 0;
+        while (i < HASHSIZ) {
+            let table[i] = Collection.new();
+            let i = i + 1;
+        }
+
+        return this;
+    }
+
+
+    method void dispose() {
+        var int i;
+        var Collection b;
+
+        let i = 0;
+        while (i < HASHSIZ) {
+            let b = table[i];
+            do b.dispose();
+            let i = i + 1;
+        }
+
+        do table.dispose();
+        do Memory.deAlloc(this);
+
+        return;
+    }
+
+
+    method int hashSize() {
+        return HASHSIZ;
+    }
+
+
+    method Symbol bucket(int i) {
+        return table[i];
+    }
+
+
+    method Array _lookup(String s) {
+        var int i;
+        var Array a;
+        var Collection b;
+        var Symbol p;
+
+        let b = table[hash(s)];
+        let a = Array.new(3);
+        let a[0] = b;
+
+        let i = 0;
+        while (i < b.length()) {
+            let p = b.nth(i);
+            if (Str.eq(s, p.tag())) {
+                let a[1] = p;
+                let a[2] = i;
+                return a;
+            }
+            let i = i + 1;
+        }
+
+        let a[1] = null;
+
+        return a;
+    }
+
+
+    method Symbol lookup(String s) {
+        var Array a;
+        var Symbol p;
+
+        let a = _lookup(s);
+        let p = a[1];
+        do a.dispose();
+
+        return p;
+    }
+
+
+    method Symbol install(String name, int type, int val) {
+        var Array a;
+        var Collection b;
+        var Symbol p;
+
+        let a = _lookup(name);
+        let b = a[0];
+        let p = a[1];
+        do a.dispose();
+
+        if (p = null) {
+            let p = Symbol.new(name, type, val);
+            do b.push(p);
+        } else {
+            do p.setData(val);
+            do p.setMeta(type);
+        }
+
+        return p;
+    }
+
+
+    method Symbol delete(String name) {
+        var int i;
+        var Array a;
+        var Collection b;
+
+        let a = _lookup(name);
+        let b = a[0];
+        let i = a[2];
+        do a.dispose();
+
+        if (i < 0) {
+            return null;
+        }
+
+        return b.remove(i);
+    }
+
+
+    method int hash(String s) {
+        var int h, i;
+
+        let h = 0;
+        let i = 0;
+        while (i < s.length()) {
+            let h = s.charAt(i) + (15*h);
+            let i = i + 1;
+        }
+
+        return Math.abs(mod(h));
+    }
+
+
+    method int mod (int n) {
+        var int q;
+
+        let q = n / HASHSIZ;
+
+        return n - (q*HASHSIZ);
+    }
+
+}

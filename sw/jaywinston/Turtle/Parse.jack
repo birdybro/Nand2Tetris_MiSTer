@@ -1,0 +1,484 @@
+// Site use of the meta namespace is bit[0..2] to classify operator precedence.
+
+class Parse {
+
+    static booolean asgn;
+    static int ARTEX, ASGN, BEND, BLANK, BLOCK, CMDLIN, COMMA, END, EOS, EQ,
+      FMTEX, INDEX, INT, LEND, LIST, LPAREN, NAME, NOLGL, OP, RPAREN, STR, UOP;
+    static int GLOBL, SITE, TOKENMASK;
+    static String PS1, PS2;
+    static Symbol ARGV;
+
+
+    function void init() {
+
+        let asgn = false;
+        let ASGN = Lex.cclass(61);
+        let ARTEX = LibSym.ARTEX();
+        let BEND = Lex.cclass(125);
+        let BLANK = Lex.cclass(32);
+        let BLOCK = LibSym.BLOCK();
+        let CMDLIN = LibSym.CMDLIN();
+        let COMMA = FMTEX & ~BLOCK;
+        let END = Lex.cclass(93);
+        let EOS = Lex.EOS();
+        let EQ = Lex.cclass(33);
+        let FMTEX = LibSym.FMTEX();
+        let INDEX = LibSym.INDEX();
+        let INT = LibSym.INT();
+        let LEND = END;
+        let LIST = Lex.cclass(91);
+        let LPAREN = Lex.cclass(40);
+        let NAME = LibSym.NAME();
+        let NOLGL = Lex.NOLGL();
+        let OP = LibSym.OP();
+        let RPAREN = Lex.cclass(41);
+        let STR = LibSym.STR();
+        let UOP = LibSym.UOP();
+
+        let SITE = LibSym.SITE() | OP;
+        let GLOBL = ~SITE | OP;
+        let TOKENMASK = ~STR & (NAME | INT);
+
+        let PS1 = ">";
+        let PS2 = "|";
+
+        let ARGV = Symbol.new(null, null, null);
+
+        return;
+    }
+
+
+    function void kill() {
+        do PS1.dispose();
+        do PS2.dispose();
+        do LibSym.eradicateSym(ARGV);
+        return;
+    }
+
+
+    /* stub, just in case */
+    function String input(String ps) {
+        return LibIO.read(ps);
+    }
+
+
+    function Collection next() {
+        do Parse.cmdlin(Parse.input(PS1), ARGV, 0);
+        return ARGV.data();
+    }
+
+
+    function int cclass(String s, int i) {
+        return Lex.cclass(Lex.getch(s, i));
+    }
+
+
+    function int package(Symbol pkg, int data, String tag, int i) {
+
+        if (pkg = null) {
+            return -1;
+        }
+
+        do pkg.setData(data);
+        do pkg.setTag(tag);
+
+        return i;
+    }
+
+
+    function String tag(Symbol p) {
+        var String s;
+
+        if (p = null) {
+            return null;
+        }
+
+        let s = p.tag();
+        do p.setTag(null);
+
+        return s;
+    }
+
+
+    function int atom(String s, Symbol word, int i) {
+        var int cc;
+        var String t;
+        var Array a;
+
+        let cc = Parse.cclass(s, i) & GLOBL;
+        do word.setMeta(cc);
+
+        if (cc = LIST) {
+            let i = Parse.list(s, word, i);
+            let s = Parse.tag(word);
+        } else { if (cc = BLOCK) {
+            let i = Parse.block(s, word, i);
+            let s = Parse.tag(word);
+        } else { if (cc = INT) {
+            let t = String.new(s.length()-i);
+            let i = Lex.token(s, t, TOKENMASK, i);
+            do word.setData(t.intValue());
+            do t.dispose();
+        } else { if (cc = ARTEX) {
+            let i = Parse.artex(s, word, i);
+            let s = Parse.tag(word);
+        } else { if (cc = STR) {
+            let t = String.new(s.length()-i);
+            let i = Lex.string(s, t, i);
+            if (i < 0) {
+                do LibIO.error("EOS while scanning string");
+            }
+            do word.setData(t);
+        } else { if (cc = NAME) {
+            let t = String.new(s.length());
+            let i = Lex.token(s, t, TOKENMASK, i);
+            do word.setData(t);
+        } else {
+            let t = "unexpected character: '%C'";
+            let a = Array.new(1);
+            let a[0] = s.charAt(i);
+            do LibIO.error(Str.format(t, a));
+            do t.dispose();
+            do a.dispose();
+            let i = -1;
+        }}}}}}
+
+        do word.setTag(s);
+
+        return i;
+    }
+
+
+    function int expr(String s, Symbol atom, int i) {
+
+        let i = Parse.atom(s, atom, i);
+        let s = Parse.tag(atom);
+
+        if (Parse.cclass(s, i) = INDEX) {
+            do atom.setData(Symbol.new(null, atom.meta(), atom.data()));
+            do atom.setMeta(INDEX);
+            let i = Parse.index(s, atom, i);
+            let s = Parse.tag(atom);
+        }
+
+        do atom.setTag(s);
+
+        return i;
+    }
+
+
+    function int cmdlin(String s, Symbol cmdlin, int i) {
+        var int dlm;
+        var int cc;
+        var String t;
+        var Collection arglist;
+        var Symbol arg;
+
+        let arglist = Collection.new();
+
+        let i = Str.skip(s, 32, i);
+        if (i = s.length()) {
+            return Parse.package(cmdlin, arglist, s, i);
+        }
+
+        let dlm = END | NOLGL;
+        let cc = Parse.cclass(s, i);
+        while ( (cc&dlm) = 0 ) {
+
+            let arg = Symbol.new(null, null, null);
+            let i = Parse.expr(s, arg, i);
+            let s = Parse.tag(arg);
+            let cc = Parse.cclass(s, i);
+
+            if (asgn) {
+                let asgn = false;
+                do arglist.append(Symbol.new(null, NAME, "ASSIGN"));
+                let i = i + 1;
+            } else { if ( (cc=ASGN) & (~(Parse.cclass(s, i+1)=ASGN)) ) {
+                do arglist.append(Symbol.new(null, NAME, "ASSIGN"));
+                let i = i + 1;
+            } else { if ( (cc&GLOBL) = ARTEX ) {
+                let arg = Symbol.new(null, ARTEX, arg);
+                let i = Parse.artex(s, arg, i);
+                let s = Parse.tag(arg);
+            } else { if (cc = FMTEX) {
+                let arg = Symbol.new(null, FMTEX, arg);
+                let i = Parse.fmtex(s, arg, i);
+                let s = Parse.tag(arg);
+            }}}}
+
+            do arglist.append(arg);
+            let i = Str.skip(s, 32, i);
+            let cc = Parse.cclass(s, i);
+        }
+
+        return Parse.package(cmdlin, arglist, s, i);
+    }
+
+
+    function int artex(String s, Symbol artex, int i) {
+        var boolean uop;
+        var int dlm, cc, op;
+        var String t;
+        var Collection stack, queue;
+        var Symbol token, top;
+
+        let dlm = (BLANK | COMMA) | END;
+        let queue = Collection.new();
+        let stack = Collection.new();
+        do stack.push(Symbol.new(null, null, null));
+        if (artex.data() = null) {
+            let uop = true;
+        } else {
+            let uop = false;
+            do queue.append(artex.data());
+        }
+
+        let cc = Parse.cclass(s, i);
+        while ( (cc&dlm) = 0 ) {
+
+            if (cc = NOLGL) {
+                do LibSym.destroyList(stack);
+                return Parse.package(artex, queue, s, -1);
+            }
+
+            if (cc = LPAREN) {
+                do stack.push(Symbol.new(null, LPAREN, null));
+                let uop = true;
+                let i = i + 1;
+            } else { if (cc = RPAREN) {
+                let top = stack.pop();
+                while (~(top.meta() = LPAREN)) {
+                    if (top.meta() = null) {
+                        do LibIO.error("mismatched parentheses");
+                        do LibSym.destroyList(stack);
+                        return Parse.package(artex, queue, s, -1);
+                    }
+                    do top.setMeta(OP);
+                    do queue.append(top);
+                    let top = stack.pop();
+                }
+                do top.dispose();
+                let uop = false;
+                let i = i + 1;
+            } else { if ( (cc&OP) = OP ) {
+                let op = s.charAt(i);
+                if (uop) {  /* I don't love this. */
+                    let token = Symbol.new(null, UOP, op);
+                } else {
+                    let token = Symbol.new(null, cc&SITE, op);
+                    if (cc = ASGN) {
+                        let i = Parse.eqop(s, token, i);
+                    }
+                    if (asgn) {
+                        do token.dispose();
+                    } else {
+                        let top = stack.pop();
+                        while ( ~(top.meta()<token.meta())
+                                 & ~(top.meta()=LPAREN) ) {
+                            do queue.append(top);
+                            let top = stack.pop();
+                        }
+                        do stack.push(top);
+                    }
+                }
+                if (~asgn) {
+                    do stack.push(token);
+                    let i = i + 1;
+                }
+                let uop = true;
+            } else {
+                let token = Symbol.new(null, null, null);
+                let i = Parse.expr(s, token, i);
+                let s = Parse.tag(token);
+                do queue.append(token);
+
+                let top = stack.nth(0);
+                while (top.meta() = UOP) {
+                    do queue.append(stack.pop());
+                    let top = stack.nth(0);
+                }
+
+                let uop = false;
+            }}}
+
+            let cc = Parse.cclass(s, i);
+        }
+
+        let top = stack.pop();
+        while (~(top.meta() = null)) {
+            if (top.meta() = LPAREN) {
+                do LibIO.error("mismatched parentheses");
+                do LibSym.destroyList(stack);
+                return Parse.package(artex, queue, s, -1);
+            }
+            do queue.append(top);
+            let top = stack.pop();
+        }
+
+        do top.dispose();
+        do stack.dispose();
+
+        return Parse.package(artex, queue, s, i);
+    }
+
+
+    function int eqop(String s, Symbol token, int i) {
+        if (Parse.cclass(s, i+1) = ASGN) {
+            do token.setData((token.data()*100) + 61);
+            do token.setMeta(EQ&SITE);
+            return i + 1;
+        }
+        let asgn = true;
+        do s.setCharAt(i, 32);
+        do token.setMeta(null);
+        return i;
+    }
+
+
+function void db(int c) { var String p,q; var Array a; let a=Array.new(1); let a[0]=c; let p="c is: '%C'"; let q=Str.format(p,a); do DB.db(q); do p.dispose(); do q.dispose(); do a.dispose(); return; }
+function void dbs(int c) { var String p,q; var Array a; let a=Array.new(1); let a[0]=c; let p="s is: '%S'"; let q=Str.format(p,a); do DB.db(q); do p.dispose(); do q.dispose(); do a.dispose(); return; }
+
+    function int fmtex(String s, Symbol fmtex, int i) {
+        var int cc;
+        var String t;
+        var Collection argv;
+        var Symbol arg, next;
+
+        let argv = Collection.new();
+        do argv.append(fmtex.data());
+
+        while (Parse.cclass(s, i) = FMTEX) {
+
+            let i = i + 1;
+
+            if (i = s.length()) {
+                return Parse.package(fmtex, argv, s, i);
+            }
+
+            if (s.charAt(i) = 32) {  // todo: handle any unexpected, see Lex?
+                return Parse.package(fmtex, argv, s, i);
+            }
+
+            let arg = Symbol.new(null, null, null);
+            let i = Parse.expr(s, arg, i);
+            let s = Parse.tag(arg);
+            let cc = Parse.cclass(s, i) & GLOBL;
+
+            if (cc = NOLGL) {
+                do LibSym.destroySym(arg);
+                return Parse.package(fmtex, argv, s, -1);
+            }
+
+            if (cc = ARTEX) {
+                let arg = Symbol.new(null, ARTEX, arg);
+                let i = Parse.artex(s, arg, i);
+                let s = Parse.tag(arg);
+            }
+
+            do argv.append(arg);
+        }
+
+        return Parse.package(fmtex, argv, s, i);
+    }
+
+
+    function int block(String s, Symbol arg, int i) {
+        var int cc;
+        var Collection arglist, block;
+        var Symbol cmdlin;
+
+        let block = Collection.new();
+
+        let i = i + 1;
+        while (true) {
+
+            let cmdlin = Symbol.new(null, CMDLIN, null);
+            let i = Parse.cmdlin(s, cmdlin, i);
+            let s = Parse.tag(cmdlin);
+
+            let arglist = cmdlin.data();
+
+            if (arglist.length() = 0) {
+                do cmdlin.dispose();
+                do arglist.dispose();
+            } else {
+                do block.append(cmdlin);
+            }
+
+            let cc = Parse.cclass(s, i);
+            if (cc = BEND) {
+                return Parse.package(arg, block, s, i+1);
+            }
+            if (cc = NOLGL) {
+                return Parse.package(arg, block, s, -1);
+            }
+
+            let s = Parse.input(PS2);
+            let i = 0;
+        }
+
+        return 0;
+    }
+
+
+    function int list(String s, Symbol arg, int i) {
+        var int cc;
+        var Collection cmdlin, list;
+        var Symbol arglist;
+
+        let list = Collection.new();
+        let arglist = Symbol.new(null, null, null);
+
+        let i = i + 1;
+        let cc = Parse.cclass(s, i);
+        while (~(cc = LEND)) {
+
+            let i = Parse.cmdlin(s, arglist, i);
+            let s = Parse.tag(arglist);
+            let cmdlin = arglist.data();
+            do list.extend(cmdlin);
+            do Memory.deAlloc(cmdlin);
+
+            let cc = Parse.cclass(s, i);
+
+            if (cc = NOLGL) {
+                return Parse.package(arg, list, s, -1);
+            }
+
+            if (~(cc = LEND)) {
+                let s = Parse.input(PS2);
+                let i = 0;
+            }
+        }
+
+        do arglist.dispose();
+
+        return Parse.package(arg, list, s, i+1);
+    }
+
+
+    function int index(String s, Symbol ref, int i) {
+        var Collection index;
+        var Symbol off;
+
+        let index = Collection.new();
+        do index.append(ref.data());
+
+        let off = Symbol.new(null, null, null);
+        let i = Parse.atom(s, off, i+1);
+        let s = Parse.tag(off);
+        do index.append(off);
+        if (Parse.cclass(s, i) = INDEX) {
+            let off = Symbol.new(null, null, Symbol.new(null, INDEX, index));
+            let i = Parse.index(s, off, i);
+            let s = Parse.tag(off);
+            let index = off.data();
+            do off.dispose();
+        }
+
+        return Parse.package(ref, index, s, i);
+    }
+
+}

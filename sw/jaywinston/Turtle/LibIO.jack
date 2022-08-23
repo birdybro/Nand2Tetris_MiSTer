@@ -1,0 +1,159 @@
+class LibIO {
+
+    static boolean err;
+    static Array B;  /* boundaries */
+    static Array argv;
+    static String cerrfs, serrfs;  /* error format strings */
+    static Collection que;
+    static TextBox canvas;
+    static IOBox term;
+
+
+    function void init() {
+        /* magic number!s */
+        let B = Array.new(4);
+        let B[0] = 2;
+        let B[1] = 32;
+        let B[2] = 20;
+        let B[3] = 31;
+        let err = false;
+        let argv = Array.new(1);
+        let cerrfs = "unexpected token: %C";
+        let serrfs = "unexpected token: %S";
+        let que = Collection.new();
+        let canvas = TextBox.new(B[0], B[1], B[2], B[3]);
+        /* magic number!s */
+        let term = IOBox.new(2, 1, 20, 30, 23, Str.MAXLEN());
+        return;
+    }
+
+
+    function void kill() {
+        do B.dispose();
+        do argv.dispose();
+        do cerrfs.dispose();
+        do serrfs.dispose();
+        do LibSym.eradicateList(que);
+        do canvas.dispose();
+        do term.dispose();
+        return;
+    }
+
+
+    function void put(String msg) {
+        if (msg = null) {
+            return;
+        }
+        do que.append(msg);
+        return;
+    }
+
+
+    function int get() {
+        return que.pop();
+    }
+
+
+    function boolean isqueued() {
+        return que.length() > 0;
+    }
+
+
+    function void error(String s) {
+        let err = true;
+        do que.append(s);
+        return;
+    }
+
+
+    function void clearerr() {
+        let err = false;
+        return;
+    }
+
+
+    function boolean err() {
+        return err;
+    }
+
+
+    function void cerr(char c) {
+        let argv[0] = c;
+        do que.append(Str.format(cerrfs, argv));
+        return;
+    }
+
+
+    function void serr(String s) {
+        let argv[0] = s;
+        do que.append(Str.format(serrfs, argv));
+        return;
+    }
+
+
+    function int print(String s, int i, int j) {
+        if (canvas.set(i, j) = 0) {
+            do canvas.print(s);
+            return 0;
+        }
+        return 1;
+    }
+
+
+    function void termprint(String s) {
+        do term.print(s);
+        return;
+    }
+
+
+    function void echo(String s) {
+        do term.echo(s);
+        return;
+    }
+
+
+    function String read(String ps) {
+        return term.read(ps);
+    }
+
+
+    function void clear() {
+        do term.clear();
+        do canvas.clear();
+        return;
+    }
+
+
+    function void fixCanvas() {
+        do Screen.setColor(false);
+        do Screen.drawRectangle(249, 14, 511, 19);
+        do Screen.drawRectangle(249, 14, 253, 244);
+        do Screen.drawRectangle(249, 244, 511, 248);
+        do Screen.drawRectangle(505, 14, 511, 248);
+        return;
+    }
+
+
+    function Array esctab() {
+        var int i;
+        var Array et;
+
+        let et = Array.new(3);  /* magic number! */
+        let i = 0;
+
+        /* NEWLINE */
+        let et[i] = 78;
+        let et[i+1] = 128;
+        let i = i + 2;
+
+        let et[i] = null;
+
+        return et;
+    }
+
+
+    function Array boundaries() {
+        return B;
+    }
+
+}

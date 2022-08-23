@@ -1,0 +1,225 @@
+class TextBox {
+
+    field int row, col;
+    field int left, right, top, bottom;
+
+
+    constructor TextBox new(int i, int j, int h, int w) {
+
+        let left = j;
+        let right = j + w;
+        let top = i;
+        let bottom = i + h;
+
+        let row = top;
+        let col = left;
+
+        do clear();
+
+        return this;
+    }
+
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+
+    method int set(int i, int j) {
+
+        if ( ((i<0) | (i>(bottom-top))) | ((j<0) | (j>(right-left))) ) {
+            return 1;
+        }
+
+        let row = top + i;
+        let col = left + j;
+
+        return 0;
+    }
+
+
+    method void clear() {
+        var int x1, y1, x2, y2;
+
+        if (left > 0) {
+            let x1 = (left*8) - 2;
+        } else {
+            let x1 = 0;
+        }
+
+        if (top > 0) {
+            let y1 = (top*11) - 2;
+        } else {
+            let y1 = 0;
+        }
+
+        if (right < 64) {
+            let x2 = (right*8);
+        } else {
+            let x2 = 510;
+        }
+
+        if (bottom < 23) {
+            let y2 = (bottom*11) + 1;
+        } else {
+            let y2 = 255;
+        }
+
+
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x1, y1, x2, y2);
+
+        if (x1 > 0) {
+            let x1 = x1 + 1;
+        }
+        if (y1 > 0) {
+            let y1 = y1 + 1;
+        }
+        if (x2 < 510) {
+            let x2 = x2 - 1;
+        }
+        if (y2 < 255) {
+            let y2 = y2 - 1;
+        }
+
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x1, y1, x2, y2);
+
+        return;
+    }
+
+
+    method void reset() {
+        do clear();
+        let row = top;
+        let col = left;
+        return;
+    }
+
+
+    method void putc(int c) {
+
+        if (c = 128) {
+            do newline();
+            return;
+        }
+
+        if (col = right) {
+            do newline();
+        }
+
+        do Output.moveCursor(row, col);
+        do Output.printChar(c);
+
+        if (c = 129) {
+            if ( (col=left) & (left>0) )  {
+                do Screen.setColor(true);
+                do Screen.drawLine((left*8)-2, top*11, (left*8)-2, bottom*11);
+            }
+            do backspace();
+            return;
+        }
+
+        let col = col + 1;
+
+        return;
+    }
+
+
+    method void newline() {
+
+        let col = left;
+        let row = row + 1;
+
+        if (row = bottom) {
+            do scroll();
+            let row = row - 1;
+        }
+
+        return;
+    }
+
+
+    method void backspace() {
+
+        if ( (col=left) & (row>top) ) {
+            let col = right - 1;
+            let row = row - 1;
+        } else {
+            let col = col - 1;
+        }
+
+        return;
+    }
+
+
+    method void print(String s) {
+        var int i, len;
+
+        let len = s.length();
+        let i = 0;
+        while (i < len) {
+            do putc(s.charAt(i));
+            let i = i + 1;
+        }
+
+        return;
+    }
+
+
+    method void echo(String s) {
+        var int i;
+
+        do Output.moveCursor(row, col);
+
+        let i = col;
+        while (i < right) {
+            do Output.printChar(32);
+            let i = i + 1;
+        }
+
+        do print(s);
+        do newline();
+
+        return;
+    }
+
+
+    method void scroll() {
+        var boolean odd;
+        var int width, end, off, pxRow;
+        var int oddChar;
+
+        let width = (right-left) / 2;
+        let odd = -(width & 1);
+        let end = 16384 + (((bottom-1)*352) + (left/2));
+        let pxRow = 16384 + ((top*352) + (left/2));
+
+        while (pxRow < end) {
+            let off = 0;
+            while (off < width) {
+                do Memory.poke(pxRow+off, Memory.peek((pxRow+off)+352));
+                let off = off + 1;
+            }
+            if (odd) {
+                let oddChar = Memory.peek((pxRow+off)+352) & 255;
+                let oddChar = oddChar | (Memory.peek(pxRow+off) & -256);
+                do Memory.poke(pxRow+off, oddChar);
+            }
+            let pxRow = pxRow + 32;
+        }
+
+        do Output.moveCursor(bottom-1, left);
+
+        let width = left;  // recycle 'width'; nothing to do with it's name
+
+        while (width < right) {
+            do Output.printChar(32);
+            let width = width + 1;
+        }
+
+        return;
+    }
+
+}

@@ -1,0 +1,171 @@
+class DB {
+
+    function void db(String s) {
+        var String t;
+        let t = "                  ";
+        do Output.moveCursor(0,0);
+        do Output.printString(t);
+        do t.dispose();
+        do Output.moveCursor(0,0);
+        if (s = null) {
+            let t = "DB: no string";
+            do Output.printString(t);
+            do t.dispose();
+        } else {
+            do Output.printString(s);
+        }
+        do DB.pause();
+        return;
+    }
+
+
+    function void dbi(int i) {
+        var String t;
+        let t = "                  ";
+        do Output.moveCursor(0,0);
+        do Output.printString(t);
+        do t.dispose();
+        do Output.moveCursor(0,0);
+        do Output.printInt(i);
+        do DB.pause();
+        return;
+    }
+
+
+    function void mv() {
+        var int i;
+
+        let i = 2048;
+        while (i < 16384) {
+            if (Memory.peek(i)=0) {
+                do Output.printInt(i);
+                do Output.printChar(32);
+            }
+            let i = Memory.peek(i+1);
+        }
+
+        return;
+    }
+
+
+    function int mc() {
+        var int i, n;
+
+        let n = 0;
+        let i = 2048;
+        while (i < 16384) {
+            if (Memory.peek(i)=0) {
+                let n = n + 1;
+            }
+            let i = Memory.peek(i+1);
+        }
+
+        return n;
+    }
+
+
+    function void ps(Symbol p) {
+        do DB.db(LibSym.format(p));
+        return;
+    }
+
+
+    function void pl(Collection p) {
+        var int i;
+        let i=0;
+        while(i<p.length()) {
+            do DB.db(LibSym.format(p.nth(i)));
+            let i=i+1;
+        }
+        return;
+    }
+
+
+/*
+    function void print(Symbol p, int c1, int r1) {
+        var int c, r, l;
+        var Array a;
+        var String s, t;
+
+        if (p=0) {
+            return;
+        }
+
+        if ((c1>55)|(r1>20)){
+            let c1=0;
+            let r1=0;
+        }
+
+        if (p.meta() = 0) {
+            let t = "null";
+        } else { if (p.meta() = LibSym.CMD()) {
+            let t = "CMD";
+        } else { if (p.meta() = LibSym.INT()) {
+            let t = "INT";
+        } else { if (p.meta() = LibSym.NAME()) {
+            let t = "NAME";
+        } else { if (p.meta() = LibSym.TTL()) {
+            let t = "TTL";
+        } else { if (p.meta() = LibSym.STR()) {
+            let t = "STR";
+        } else { if (p.meta() = LibSym.FUNC()) {
+            let t = "FUNC";
+        } else { if (p.meta() = LibSym.CMDLIN()) {
+            let t = "CMDLIN";
+        } else { if (p.meta() = LibSym.BLOCK()) {
+            let t = "BLOCK";
+        } else { if (p.meta() = LibSym.ARTEX()) {
+            let t = "ARTEX";
+        } else { if (p.meta() = LibSym.FMTEX()) {
+            let t = "FMTEX";
+        } else { if ((p.meta()&LibSym.OP()) = LibSym.OP()) {
+            let t = "OP";
+        } else { if (p.meta() = LibSym.UOP()) {
+            let t = "UOP";
+        } else {
+            let t = "?";
+        }}}}}}}}}}}}}
+
+        let c = c1;
+        let r = r1;
+
+        if (p.tag()=0) {
+            let s = "null";
+        } else {
+            let s = p.tag();
+        }
+
+        let l = Math.max(s.length(),t.length());
+
+        do Output.moveCursor(r,c);
+        do Output.printString(s);
+
+        if (p.next()>0) {
+            do Output.moveCursor(r,c+l);
+            do Output.printString("->");
+        }
+
+        do Output.moveCursor(r+1,c);
+        do Output.printString(t);
+
+        if ( ((p.meta()&(LibSym.BLOCK())) = LibSym.BLOCK())
+            & (~((p.meta()&31)=26)) ) {
+            do Output.moveCursor(r+2,c);
+            do Output.printString("|");
+            do DB.print(p.data(), c, r+3);
+        }
+
+        do DB.print(p.next(), c+(l+4), r);
+
+        return;
+    }
+*/
+
+
+    function void pause() {
+        while (Keyboard.keyPressed() = 0){}
+        do Memory.poke(24576,0);
+        return;
+    }
+
+}

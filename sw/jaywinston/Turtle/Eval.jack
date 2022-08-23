@@ -1,0 +1,599 @@
+// Site use of the meta namespace is bit[0..2] to classify unary operator.
+
+class Eval {
+
+    static int ESC;
+    static int ARTEX, BLOCK, FMTEX, FUNC, GLOBL, INDEX, INT, LIST, NAME, OP,
+        STR, UOP;
+    static Array FSPECTAB, TYPETAB;
+    static Array FERRARGV;
+    static String FERRFS;
+    static Collection context, symtab;
+
+
+    function void init() {
+
+        let ESC = 37;
+
+        let ARTEX = LibSym.ARTEX();
+        let BLOCK = LibSym.BLOCK();
+        let FMTEX = LibSym.FMTEX();
+        let FUNC = LibSym.FUNC();
+        let GLOBL = ~LibSym.SITE();
+        let INDEX = LibSym.INDEX();
+        let INT = LibSym.INT();
+        let LIST = LibSym.LIST();
+        let NAME = LibSym.NAME();
+        let OP = LibSym.OP();
+        let STR = LibSym.STR();
+        let UOP = LibSym.UOP();
+
+        let FSPECTAB = Eval.fspectab();
+        let TYPETAB = Eval.typetab();
+        let FERRFS = "expected %S argument";
+        let FERRARGV = Array.new(1);
+
+        let context = Collection.new();
+        let symtab = Collection.new();
+        do symtab.push(HashTable.new(15));
+
+        return;
+    }
+
+
+    function void kill() {
+        var int i;
+        var String s;
+
+        do FSPECTAB.dispose();
+        do FERRFS.dispose();
+        do FERRARGV.dispose();
+
+        let i = 0;
+        while (~(TYPETAB[i] = null)) {
+            let s = TYPETAB[i+1];
+            do s.dispose();
+            let i = i + 2;
+        }
+
+        do TYPETAB.dispose();
+
+        while (context.length() > 0) {
+            do LibSym.eradicateList(context.pop());
+        }
+        do context.dispose();
+
+        while (symtab.length() > 0) {
+            do LibSym.destroyHashTable(symtab.pop());
+        }
+        do symtab.dispose();
+
+        return;
+    }
+
+
+    /** format specifiers must not map to themselves */
+    function Array fspectab() {
+        var int i;
+        var Array fspectab;
+
+        let fspectab = Array.new(5);  /* magic number! */
+        let i = 0;
+
+        let fspectab[i] = 68;
+        let fspectab[i+1] = INT;
+        let i = i + 2;
+
+        let fspectab[i] = 83;
+        let fspectab[i+1] = STR;
+        let i = i + 2;
+
+        let fspectab[i] = null;
+
+        return fspectab;
+    }
+
+
+    function Array typetab() {
+        var int i;
+        var Array typetab;
+
+        let typetab = Array.new(5);  /* magic number! */
+        let i = 0;
+
+        let typetab[i] = INT;
+        let typetab[i+1] = "integer";
+        let i = i + 2;
+
+        let typetab[i] = STR;
+        let typetab[i+1] = "string";
+        let i = i + 2;
+
+        let typetab[i] = null;
+
+        return typetab;
+    }
+
+
+    function Symbol arg(Symbol arg) {
+        var int type;
+
+        if (arg = null) {
+            return null;
+        }
+
+        let type = arg.meta();
+
+        if (type = NAME)  { return Eval.name(arg);  }
+        if (type = ARTEX) { return Eval.artex(arg); }
+        if (type = FMTEX) { return Eval.fmtex(arg); }
+        if (type = BLOCK) { return Eval.block(arg); }
+        if (type = LIST)  { return Eval.list(arg);  }
+        if (type = INDEX) { return Eval.index(arg); }
+
+        return arg;
+    }
+
+
+    function Symbol name(Symbol arg) {
+        var String tag;
+        var Symbol p;
+
+        let tag = arg.data();
+        let p = Eval.lookup(tag);
+
+        if (p = null) {
+            do LibIO.error("undefined name");
+            do arg.setMeta(null);
+            do tag.dispose();
+            return arg;
+        }
+
+        do arg.setTag(tag);
+        do arg.setMeta(p.meta());
+        do arg.setData(p.data());
+
+        return arg;
+    }
+
+
+    function Symbol lookup(String s) {
+        var int i;
+        var HashTable table;
+        var Symbol sym;
+
+        if (Eval.isArg(s)) {
+            return Eval.lookupArg(s);
+        }
+
+        let i = 0;
+        while (i < symtab.length()) {
+            let table = symtab.nth(i);
+            let sym = table.lookup(s);
+            if (~(sym = null)) {
+                return sym;
+            }
+            let i = i + 1;
+        }
+
+        return null;
+    }
+
+
+    function boolean isArg(String s) {
+        var char c;
+        var int i;
+
+        if (context.length() = 0) {
+            return false;
+        }
+
+        if (s.length() < 2) {
+            return false;
+        }
+
+        if (~(s.charAt(0) = 36)) {
+            return false;
+        }
+
+        let i = 1;
+        while (i < s.length()) {
+            let c = s.charAt(i);
+            if ( (c<48) | (c>57) ) {
+                return false;
+            }
+            let i = i + 1;
+        }
+
+        return true;
+    }
+
+
+    function Symbol lookupArg(String s) {
+        var int i;
+        var Collection argv;
+
+        do Str.shift(s, 1, 0);
+        let i = s.intValue();
+        do s.dispose();
+
+        let argv = context.nth(0);
+
+        if (~(i < argv.length())) {
+            do LibIO.error("undefined name");
+            // todo: unexpected 's';
+            return null;
+        }
+
+        return argv.nth(i);
+    }
+
+
+    function Symbol artex(Symbol artex) {
+        var Collection q;
+
+        let q = artex.data();
+
+        if (q.length() = 0) {
+            do q.dispose();
+            do artex.setMeta(null);
+        } else {
+            do artex.setData(Eval.arithmeticExpression(q));
+            do artex.setMeta(INT);
+        }
+
+        return artex;
+    }
+
+
+    function int arithmeticExpression(Collection queue) {
+        var int lo, ro;  /* left, right operand */
+        var int n;
+        var Collection stack;
+        var Symbol tok;
+
+        let stack = Collection.new();
+
+        while (queue.length() > 0) {
+
+            let tok = Eval.arg(queue.pop());
+
+            if (tok.meta() = UOP) {
+                if (stack.length() = 0) {
+                    do LibIO.error("expected operand");
+                    do LibSym.destroyList(queue);
+                    do stack.dispose();
+                    do tok.dispose();
+                    return null;
+                }
+                do stack.push(Eval.uoperate(stack.pop(), tok.data()));
+            } else { if ( (tok.meta()&OP) = OP) {
+                if (stack.length() < 2) {
+                    do LibIO.error("expected operand");
+                    do LibSym.destroyList(queue);
+                    do stack.dispose();
+                    do tok.dispose();
+                    return null;
+                }
+                let ro = stack.pop();
+                let lo = stack.pop();
+                do stack.push(Eval.operate(lo, ro, tok.data()));
+            } else {
+                if (~(tok.meta() = INT)) {
+                    do LibIO.error("expected integer");
+                    do LibSym.destroyList(queue);
+                    do LibSym.destroySym(tok);
+                    do stack.dispose();
+                    return null;
+                }
+                do stack.push(tok.data());
+            }}
+
+            do tok.dispose();
+        }
+
+        let n = stack.pop();
+
+        if (stack.length() > 0) {
+            do LibIO.error("expected operator");
+            do LibSym.destroyList(queue);
+            do stack.dispose();
+            return null;
+        }
+
+        do stack.dispose();
+        do queue.dispose();
+
+        return n;
+    }
+
+
+    function int uoperate(int n, int op) {
+        if (op =  43) { return Math.abs(n); }
+        if (op =  45) { return -n;          }
+        if (op = 126) { return ~n;          }
+        do LibIO.error("unrecognized operator");
+        return 0;
+    }
+
+
+    function int operate(int m, int n, int op) {
+
+        if ( ((op=47) | (op=37)) & (n=0) ) {
+            do LibIO.error("division by zero");
+            return 0;
+        }
+
+        if (op =  38) { return m & n; }
+        if (op = 124) { return m | n; }
+        if (op =  94) { return (m|n) & ~(m&n); }
+
+        if (op =  43) { return m + n; }
+        if (op =  45) { return m - n; }
+        if (op =  42) { return m * n; }
+        if (op =  47) { return m / n; }
+        if (op =  37) { return Vector.mod(m, n); }
+
+        if (op = 6161) { return   m = n;  }
+        if (op = 3361) { return ~(m = n); }
+        if (op =   60) { return   m < n;  }
+        if (op =   62) { return   m > n;  }
+        if (op = 6061) { return ~(m > n); }
+        if (op = 6261) { return ~(m < n); }
+
+        do LibIO.error("unrecognized operator");
+        return 0;
+    }
+
+
+    function Symbol fmtex(Symbol fmtex) {
+        do fmtex.setData(Eval.formatExpression(fmtex.data()));
+        do fmtex.setMeta(STR);
+        return fmtex;
+    }
+
+
+    function String formatExpression(Collection argv) {
+        var boolean fspec;
+        var int c;
+        var int a, i;
+        var int type;
+        var Array fargv;
+        var String s, t;
+        var Symbol arg, fstrp;
+
+        let fstrp = Eval.arg(argv.pop());
+
+        if (fstrp = null) {  // todo: need?
+            do LibIO.error("expected format string");
+            do LibSym.destroyList(argv);
+            return "";
+        }
+
+        if (~(fstrp.meta() = STR)) {
+            do LibIO.error("expected format string");
+            do LibSym.destroyList(argv);
+            do LibSym.destroySym(fstrp);
+            return "";
+        }
+
+        let s = fstrp.data();
+
+        if (s.length() < 2) {
+            do LibSym.destroyList(argv);
+            let s = Str.dup(s);
+            do LibSym.destroySym(fstrp);
+            return s;
+        }
+
+        let fargv = Array.new(s.length()/2);
+        let fspec = false;
+        let a = 0;
+
+        let i = 0;
+        while (i < s.length()) {
+            let c = s.charAt(i);
+            if ( fspec & ~(c=ESC) ) {
+
+                let arg = Eval.arg(argv.nth(a));
+
+                if (arg = null) {
+                    do LibIO.error("expected format argument");
+                    do LibSym.destroyList(argv);
+                    do LibSym.destroySym(fstrp);
+                    do fargv.dispose();
+                    return "";
+                }
+
+                let type = Lex.escape(c, FSPECTAB);
+
+                if (type = c) {
+                    do LibIO.error("unrecognized format specifier");
+                    do LibSym.destroyList(argv);
+                    do LibSym.destroySym(fstrp);
+                    do fargv.dispose();
+                    return "";
+                }
+
+                if (~(arg.meta() = type)) {
+                    let FERRARGV[0] = Lex.escape(type, TYPETAB);
+                    do LibIO.error(Str.format(FERRFS, FERRARGV));
+                    do LibSym.destroyList(argv);
+                    do LibSym.destroySym(fstrp);
+                    do fargv.dispose();
+                    return "";
+                }
+
+                let fargv[a] = arg.data();
+                let a = a + 1;
+            }
+
+            let fspec = ~fspec & (c=ESC);
+            let i = i + 1;
+        }
+
+        if (fspec) {
+            do LibIO.error("expected format specifier");
+            let t = "";
+        } else {
+            let t = Str.format(s, fargv);
+        }
+
+        do LibSym.destroyList(argv);
+        do LibSym.destroySym(fstrp);
+        do fargv.dispose();
+
+        return t;
+    }
+
+
+    function Symbol block(Symbol arg) {
+        var Symbol p;
+
+        let p = Exec.block(arg.data());
+
+        if (p = null) {
+            do arg.setMeta(null);
+        } else {
+            do arg.setTag(p.tag());
+            do arg.setMeta(p.meta());
+            do arg.setData(p.data());
+            do p.setTag(null);
+            do p.dispose();
+        }
+
+        return arg;
+    }
+
+
+    function Symbol list(Symbol arg) {
+        var int i;
+        var Collection l;
+
+        let l = arg.data();
+        let i = 0;
+        while (i < l.length()) {
+            do Eval.arg(l.nth(i));
+            let i = i + 1;
+        }
+
+        return arg;
+    }
+
+
+    function Symbol index(Symbol arg) {
+        var int i;
+        var Collection index, list;
+        var Symbol indexp, listp;
+        var Symbol deref;
+
+        let index = arg.data();
+        let listp = Eval.arg(index.pop());
+
+        if (~(listp.meta() = LIST)) {
+            do LibIO.error("expected list");
+            do LibSym.destroyList(index);
+            do LibSym.destroySym(listp);
+            return arg;
+        }
+
+        let indexp = Eval.arg(index.pop());
+        do index.dispose();
+
+        if (~(indexp.meta() = INT)) {
+            do LibIO.error("expected integer");
+            do LibSym.destroySym(indexp);
+            do LibSym.destroySym(listp);
+            return arg;
+        }
+
+        let list = listp.data();
+        let i = indexp.data();
+        do indexp.dispose();
+
+        if ( (~(i < list.length())) | ((i<0)&(-i>list.length())) ) {
+            do LibIO.error("invalid index");
+            do LibSym.destroySym(listp);
+            return arg;
+        }
+
+        let deref = list.nth(i);
+
+        do arg.setTag(Str.dup(deref.tag()));
+        do arg.setMeta(deref.meta());
+        do arg.setData(deref.data());
+
+//see kludge in Exec.next()        do LibSym.destroySym(listp);
+        do Exec.nestedlistkludge(listp);
+
+        return arg;
+    }
+
+
+    function int condition(Symbol arg) {
+        var int c;
+        var String s;
+        var Collection l;
+        var Symbol cp;
+
+        let cp = Eval.arg(LibSym.copySym(arg));
+
+        if (cp = null) {
+            return 0;
+        }
+
+        if (cp.meta() = STR) {
+            let s = cp.data();
+            let c = s.length();
+        } else { if (cp.meta() = LIST) {
+            let l = cp.data();
+            let c = l.length();
+        } else {
+            let c = cp.data();
+        }}
+
+        do LibSym.destroySym(cp);
+
+        return ~(c = 0);
+    }
+
+
+    function void pushContext(Symbol arg0, Collection argv) {
+        var int i;
+        var String s;
+
+        let i = 0;
+        while (i < argv.length()) {
+            do Eval.arg(argv.nth(i));
+            let i = i + 1;
+        }
+
+        let s = arg0.tag();
+        if (s = null) {
+            do argv.push(Symbol.new(null, STR, ""));
+        } else {
+            do argv.push(Symbol.new(null, STR, s));
+            do arg0.setTag("");
+        }
+
+        do LibSym.destroySym(arg0);
+        do context.push(argv);
+        do symtab.push(HashTable.new(3));
+
+        return;
+    }
+
+
+    function void dropContext() {
+        do LibSym.destroyList(context.pop());
+        do LibSym.destroyHashTable(symtab.pop());
+        return;
+    }
+
+
+    function void install(String name, int type, int value) {
+        do LibSym.install(symtab.nth(0), name, type, value);
+        return;
+    }
+
+}

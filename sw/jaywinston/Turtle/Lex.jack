@@ -1,0 +1,116 @@
+/**
+ * returns the index of the character immediately beyond the end of the token
+ */
+class Lex {
+
+    static char ESC, NEWLINE, STRING_DLM, NOLGL_KEY, EOS_KEY;
+    static char charbuf;
+    static Array CTAB, ESCTAB;
+
+
+    /**
+     * ctab is a table mapping characters to bitmaps
+     */
+    function void init(Array ctab, Array etab, char esc,
+                       char sdlm, char eos, char nolgl) {
+        let CTAB = ctab;
+        let ESCTAB = etab;
+        let ESC = esc;
+        let STRING_DLM = sdlm;
+        let EOS_KEY = eos;
+        let NOLGL_KEY = nolgl;
+        return;
+    }
+
+
+    function void kill() {
+        do CTAB.dispose();
+        do ESCTAB.dispose();
+        return;
+    }
+
+
+    function int cclass(char c) {
+        return CTAB[c];
+    }
+
+
+    function char getch(String s, int i) {
+
+        if ( (i<0) | (i>s.length()) ) {
+            return NOLGL_KEY;
+        }
+
+        if (i = s.length()) {
+            return EOS_KEY;
+        }
+
+        return s.charAt(i);
+    }
+
+
+    function int token(String s, String t, int mask, int i) {
+        var char c;
+
+        while (i < s.length()) {
+            let c = Lex.getch(s, i);
+            if ( (Lex.cclass(c)&mask) = 0 ) {
+                return i;
+            }
+            do t.appendChar(c);
+            let i = i + 1;
+        }
+
+        return i;
+    }
+
+
+    function int string(String s, String t, int i) {
+        var char c;
+
+        let i = i + 1;  /* discard left quote */
+
+        while (i < s.length()) {
+
+            let c = s.charAt(i);
+
+            if (c = STRING_DLM) {  /* success */
+                return i + 1;  /* discard right quote */
+            }
+
+            if (c = ESC) {
+                let i = i + 1;
+                if (~(i < s.length())) {
+                    return -1;  /* EOS while scanning for quote */
+                }
+                let c = Lex.escape(s.charAt(i), ESCTAB);
+            }
+
+            do t.appendChar(c);
+
+            let i = i + 1;
+        }
+
+        return -1;  /* EOS while scanning for quote */
+    }
+
+
+    function char escape(char c, Array etab) {
+        var int i;
+
+        let i = 0;
+        while (~(etab[i] = null)) {
+            if (etab[i] = c) {
+                return etab[i+1];
+            }
+            let i = i + 2;
+        }
+
+        return c;
+    }
+
+
+    function int EOS() { return CTAB[EOS_KEY]; }
+    function int NOLGL() { return CTAB[NOLGL_KEY]; }
+
+}

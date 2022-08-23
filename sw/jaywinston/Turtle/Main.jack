@@ -1,0 +1,113 @@
+class Main {
+
+    static boolean running;
+static boolean mv;  // ##DB##
+
+
+    function void main() {
+        do Main.printBanner();
+        do Main.init();
+        do Main.run();
+        do Main.killall();
+        return;
+    }
+
+
+    function void printBanner() {
+        var int indent;
+        var String banner;
+
+        let banner = "Turtle 0.01";
+        let indent = 29 - (banner.length()/2);  /* magic number! */
+        do Output.moveCursor(0, indent);
+        do Output.printString(banner);
+        do banner.dispose();
+        do Screen.setColor(true);
+        do Screen.drawLine(0, 13, 509, 13);  /* magic number!s */
+
+        return;
+    }
+
+
+    function void init() {
+        var char stringDelimiter, escapeCharacter;
+        var int eosKey, illegalKey;
+        var Array charToBitmapTable, escapeSequenceTable;
+
+let mv=false;  // ##DB##
+
+        do Vector.init();
+        do Turtle.init(2);
+        do Collection.init();
+        do LibIO.init();
+        do LibSym.init();
+
+        let stringDelimiter = 34;
+        let escapeCharacter = 92;
+        let eosKey = LibSym.CHARSETSIZE();
+        let illegalKey = LibSym.CHARSETSIZE() + 1;
+        let charToBitmapTable = LibSym.ctab();
+        let escapeSequenceTable = LibIO.esctab();
+
+        do Lex.init(
+            charToBitmapTable,
+            escapeSequenceTable,
+            escapeCharacter,
+            stringDelimiter,
+            eosKey,
+            illegalKey);
+        do Parse.init();
+        do Eval.init();
+        do List.init();
+        do Bin.init();
+        do Exec.init();
+
+        return;
+    }
+
+
+    function void killall() {
+        do Bin.kill();
+        do Eval.kill();
+        do Exec.kill();
+        do Parse.kill();
+        do Lex.kill();
+        do LibIO.kill();
+        do LibSym.kill();
+        do Vector.kill();
+        return;
+    }
+
+
+    function void run() {
+        var String s;
+        var Collection argv;
+
+        let running = true;
+
+        while (running) {
+            do Exec.next();
+
+            /* Error messages are already queued. */
+            do LibIO.clearerr();
+
+            while (LibIO.isqueued()) {
+                let s = LibIO.get();
+                do LibIO.echo(s);
+                do s.dispose();
+            }
+        }
+
+        return;
+    }
+
+
+    function void stop() {
+        let running = false;
+        return;
+    }
+
+
+function void mc(){let mv=true;return;}  // ##DB##
+
+}

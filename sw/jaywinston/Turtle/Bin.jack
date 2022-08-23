@@ -1,0 +1,233 @@
+class Bin {
+
+    static int bottom, left, right, top;
+    static int BIN, INT, STR;
+    static int CLEAR, DIR, FORWARD, PENDOWN, PENUP, POSX, POSY, PRINT,
+        TURNLEFT, TURNRIGHT;
+    static Turtle t;
+
+
+    function void init() {
+        var Array b;
+        var int i, j, h, w;
+
+        let b = LibIO.boundaries();
+        let i = b[0];
+        let j = b[1];
+        let h = b[2];
+        let w = b[3];
+        let top = i * 11;
+        let left = j * 8;
+        let bottom = (i+h) * 11;
+        let right = (j+w) * 8;
+        let BIN = LibSym.BIN();
+        let INT = LibSym.INT();
+        let STR = LibSym.STR();
+        let t = Bin.turtle();
+
+        let CLEAR     = 0;
+        let DIR       = 1;
+        let FORWARD   = 2;
+        let PENDOWN   = 3;
+        let PENUP     = 4;
+        let POSX      = 5;
+        let POSY      = 6;
+        let PRINT     = 7;
+        let TURNLEFT  = 8;
+        let TURNRIGHT = 9;
+
+        do Eval.install("CLEAR", BIN, CLEAR);
+        do Eval.install("DIR", BIN, DIR);
+        do Eval.install("FORWARD", BIN, FORWARD);
+        do Eval.install("PENDOWN", BIN, PENDOWN);
+        do Eval.install("PENUP", BIN, PENUP);
+        do Eval.install("POSX", BIN, POSX);
+        do Eval.install("POSY", BIN, POSY);
+        do Eval.install("PRINT", BIN, PRINT);
+        do Eval.install("TURNLEFT", BIN, TURNLEFT);
+        do Eval.install("TURNRIGHT", BIN, TURNRIGHT);
+
+        return;
+    }
+
+
+    function Turtle turtle() {
+        return Turtle.new(left + ((right-left)/2),
+                          top + ((bottom-top)/2),
+                          90);
+    }
+
+
+    function void kill() {
+        do t.dispose();
+        return;
+    }
+
+
+    function Symbol exec(int cmd, Collection argv) {
+
+        if (cmd = DIR)       { return Bin.dir();                 }
+        if (cmd = POSX)      { return Bin.posx();                }
+        if (cmd = POSY)      { return Bin.posy();                }
+        if (cmd = CLEAR)     { return Bin.clear();               }
+        if (cmd = FORWARD)   { return Bin.forward(argv.pop());   }
+        if (cmd = PENDOWN)   { return Bin.pendown();             }
+        if (cmd = PENUP)     { return Bin.penup();               }
+        if (cmd = PRINT)     { return Bin.print(argv.pop());     }
+        if (cmd = TURNLEFT)  { return Bin.turnleft(argv.pop());  }
+        if (cmd = TURNRIGHT) { return Bin.turnright(argv.pop()); }
+
+        return null;
+    }
+
+
+    function void clear() {
+        do t.dispose();
+        do LibIO.clear();
+        let t = Bin.turtle();
+        return;
+    }
+
+
+    function Symbol dir() {
+        return Symbol.new(null, INT, t.direction());
+    }
+
+
+    function void forward(Symbol arg) {
+        var int n;
+        var Array target;
+
+        do Eval.arg(arg);
+
+        if (arg = null) {
+            do LibIO.error("expected argument");
+            return;
+        }
+
+        if (~(arg.meta() = INT)) {
+            do LibIO.error("expected number");
+            do LibSym.destroySym(arg);
+            return;
+        }
+
+        let n = arg.data();
+        do arg.dispose();
+
+        if (n < 0) {
+            do LibIO.error("won't go backwards");
+            return;
+        }
+
+        let target = t.aim(n);
+
+        if ( ((target[0] < left) | (target[0] > right))
+                | ((target[1] < top) | (target[1] > bottom)) ) {
+            do LibIO.error("target beyond boundary");
+            return;
+        }
+
+        do t.forward(n);
+
+        return;
+    }
+
+
+    function void pendown() {
+        do t.pendown();
+        return;
+    }
+
+
+    function void penup() {
+        do t.penup();
+        return;
+    }
+
+
+    function Symbol posx() {
+        return Symbol.new(null, INT, t.x()-left);
+    }
+
+
+    function Symbol posy() {
+        return Symbol.new(null, INT, -(t.y()-bottom));
+    }
+
+
+    function void print(Symbol arg) {
+        var String s;
+
+        do Eval.arg(arg);
+
+        if (arg = null) {
+            do LibIO.error("can't print that");
+            return;
+        }
+
+        if (~(arg.meta() = STR)) {
+            do LibIO.error("won't print that");
+            do LibSym.destroySym(arg);
+            return;
+        }
+
+        let s = arg.data();
+        do arg.dispose();
+
+        do t.hide();
+
+        /* magic number! LibIO.print() errno */
+        if (LibIO.print(s, (t.y()-top)/11, ((t.x()-left)/8)) = 1) {
+            do LibIO.error("illegal cursor coordinate");
+        }
+
+        do t.show();
+
+        do s.dispose();
+
+        return;
+    }
+
+
+    function void turnleft(Symbol arg) {
+
+        do Eval.arg(arg);
+
+        if (arg = null) {
+            do LibIO.error("expected argument");
+            return;
+        }
+
+        if (arg.meta() = INT) {
+            do t.turnleft(arg.data());
+        } else {
+            do LibIO.error("expected number");
+        }
+
+        do LibSym.destroySym(arg);
+
+        return;
+    }
+
+
+    function void turnright(Symbol arg) {
+
+        do Eval.arg(arg);
+
+        if (arg = null) {
+            do LibIO.error("expected argument");
+            return;
+        }
+
+        if (arg.meta() = INT) {
+            do t.turnright(arg.data());
+        } else {
+            do LibIO.error("expected number");
+        }
+
+        do LibSym.destroySym(arg);
+
+        return;
+    }
+
+}

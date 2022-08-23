@@ -1,0 +1,206 @@
+class IOBox {
+
+    field int BUFSIZ, MAXLEN;
+    field int bp;
+    field Array LINBUF;
+    field TextBox tb;
+
+
+    constructor IOBox new(int i, int j, int h, int w,
+                          int bufferSize, int maxlen) {
+
+        let BUFSIZ = bufferSize;
+        let MAXLEN = maxlen;
+        let LINBUF = Array.new(BUFSIZ);
+        let bp = 0;
+        while (bp < BUFSIZ) {
+            let LINBUF[bp] = String.new(MAXLEN);  /* for memory diagnostics */
+            let bp = bp + 1;
+        }
+        let bp = 0;
+        let tb = TextBox.new(i, j, h, w);
+
+        return this;
+    }
+
+
+    method void dispose() {
+        var int i;
+        var String s;
+
+        let i = 0;
+        while (i < BUFSIZ) {
+            let s = LINBUF[i];
+            do s.dispose();
+            let i = i + 1;
+        }
+        do LINBUF.dispose();
+        do tb.dispose();
+        do Memory.deAlloc(this);
+
+        return;
+    }
+
+
+    method String read(String ps) {
+        var char c;
+        var int rp;
+        var String s;
+
+        do tb.print(ps);
+        let rp = bp;
+
+        let s = LINBUF[bp];
+        do s.dispose();
+        let s = String.new(MAXLEN);
+        let LINBUF[bp] = s;
+
+        let c = 0;
+        while (~(c = 128)) {
+            do tb.putc(0);      /* show cursor */
+            do tb.backspace();  /* next char overwrites cursor */
+
+            /* control where read char is echoed */
+            let c = Keyboard.keyPressed();
+            while (c = 0) {
+                let c = Keyboard.keyPressed();
+            }
+            do Memory.poke(24576, 0);
+
+            if ( (c>31) & (c<127) ) {
+                if (s.length() < MAXLEN) {
+                    do s.appendChar(c);
+                    do tb.putc(c);
+                }
+            } else { if (c = 129) {
+                if  (s.length() > 0) {
+                    do s.eraseLastChar();
+                    do tb.putc(c);
+                }
+            } else { if (c = 131) {
+                let rp = recall(-1, rp);
+                let s = LINBUF[rp];
+            } else { if (c = 133) {
+                let rp = recall(1, rp);
+                let s = LINBUF[rp];
+            }}}}
+        }
+
+        if (~(rp = bp)) {
+            let s = LINBUF[bp];
+            do s.dispose();
+            let s = strdup(LINBUF[rp]);
+            let LINBUF[bp] = s;
+        }
+
+        if (s.length() > 0) {
+            let bp = bp + 1;
+            if (bp = BUFSIZ) {
+                let bp = 0;
+            }
+        }
+
+        do Output.printChar(129);   /* erase cursor */
+        do tb.newline();
+
+        return s;
+    }
+
+
+    method int recall(int step, int rp) {
+        var int l;
+        var String s;
+
+        let s = LINBUF[rp];
+        let l = s.length();
+        while (l > 0) {
+            do tb.putc(129);
+            let l = l - 1;
+        }
+
+        let rp = rp + step;
+
+        if (step < 0) {
+            let rp = negrec(step, rp);
+        } else {
+            let rp = posrec(step, rp);
+        }
+
+        do tb.print(LINBUF[rp]);
+
+        return rp;
+    }
+
+
+    method int negrec(int step, int rp) {
+        var String s;
+
+        if (rp < 0) {
+            let rp = BUFSIZ + rp;
+        }
+
+        let s = LINBUF[rp];
+        if ( (s.length()=0) & ~(rp=bp) ) {
+            let rp = rp - step;
+            if (~(rp < BUFSIZ)) {
+                let rp = rp - BUFSIZ;
+            }
+        }
+
+        return rp;
+    }
+
+
+    method int posrec(int step, int rp) {
+        var String s;
+
+        if (~(rp <  BUFSIZ)) {
+            let rp = rp - BUFSIZ;
+        }
+
+        let s = LINBUF[rp];
+        if ( (s.length()=0) & ~(rp=bp) ) {
+            let rp = rp - step;
+            if (rp < 0) {
+                let rp = BUFSIZ + rp;
+            }
+        }
+
+        return rp;
+    }
+
+
+    method void print(String s) {
+        do tb.print(s);
+        return;
+    }
+
+
+    method void echo(String s) {
+        do tb.echo(s);
+        return;
+    }
+
+
+    method String strdup(String s) {
+        var int i;
+        var String t;
+
+        let t = String.new(MAXLEN);
+        let i = 0;
+        while (i < s.length()) {
+            do t.appendChar(s.charAt(i));
+            let i = i + 1;
+        }
+
+        return t;
+    }
+
+
+    method void clear() {
+        do tb.clear();
+        do tb.set(0, 0);
+        return;
+    }
+
+}
